@@ -19,6 +19,6 @@ const getRandomAvatar = () => {
 };
 
 export const generateProfile = () => ({
-  rating: getRandomStatus(),
+  status: getRandomStatus(),
   avatar: getRandomAvatar()
 });
