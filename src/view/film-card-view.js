@@ -16,7 +16,7 @@ export const createFilmCardTemplate = (filmsCard) => {
       </p>
       <img src="./images/posters/${filmInfo.poster}" alt="${filmInfo.title}" class="film-card__poster">
       <p class="film-card__description">${filmInfo.description}</p>
-      <span class="film-card__comments">Comments: ${comments.length}</span>
+      <span class="film-card__comments">Comments: ${comments.comment.length}</span>
     </a>
     <div class="film-card__controls">
       <button class="film-card__controls-item ${userDetails.isWatchlist ? 'film-card__controls-item--active' : ' '} film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
