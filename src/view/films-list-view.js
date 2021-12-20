@@ -1,20 +1,17 @@
 import { createElement } from '../render.js';
 
-const createFilmListTemplate = (films = []) => (
-  `<section class="films-list">
-    <h2 class="films-list__title">
-    ${films.length > 0 ? ' ': 'There are no movies in our database'}
-    </h2>
+const createFilmListTemplate = () => (
+  `<section class="films">
+    <section class="films-list">
+      <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+      <div class="films-list__container">
+      </div>
+    </section>
   </section>`
 );
 
 export default class FilmListView {
   #element = null;
-  #films = null;
-
-  constructor(films) {
-    this.#films = films;
-  }
 
   get element() {
     if (!this.#element) {
@@ -25,7 +22,7 @@ export default class FilmListView {
   }
 
   get template() {
-    return createFilmListTemplate(this.#films);
+    return createFilmListTemplate();
   }
 
   removeElement() {

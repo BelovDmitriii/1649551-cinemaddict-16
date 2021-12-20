@@ -1,15 +1,15 @@
 import { createElement } from '../render.js';
 
 const filterName = {
-  watchList: {
+  'watchList': {
     hrefName: '#watchlist',
     displayName: 'Watchlist'
   },
-  history: {
+  'history': {
     hrefName: '#history',
     displayName: 'History'
   },
-  favorites: {
+  'favorites': {
     hrefName: '#favorites',
     displayName: 'Favorites'
   }
