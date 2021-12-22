@@ -89,7 +89,6 @@ const createFilmInfoTemplate = (filmCard) => {
                 <label class="film-details__comment-label">
                   <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comments.comment}</textarea>
                 </label>
-                </div>
               </div>
             </section>
           </div>

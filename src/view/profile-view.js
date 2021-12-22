@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from './abstract-view.js';
 
 const createProfileTemplate = (profile) => {
   const { status, avatar} = profile;
@@ -9,26 +9,15 @@ const createProfileTemplate = (profile) => {
           </section> `;
 };
 
-export default class ProfileView {
-  #element = null;
+export default class ProfileView extends AbstractView {
   #profile = null;
 
   constructor(profile) {
+    super();
     this.#profile = profile;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template() {
     return createProfileTemplate(this.#profile);
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }
