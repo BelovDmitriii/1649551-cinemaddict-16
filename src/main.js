@@ -16,6 +16,10 @@ import { generateFilters } from './mock/filter.js';
 
 const MOVIE_COUNT = 25;
 const MOVIE_COUNT_PER_STEP = 5;
+const EscapeKeyDown = {
+  ESC: 'Esc',
+  ESCAPE: 'Escape'
+};
 
 const filmCards = Array.from({length: MOVIE_COUNT}, generateFilmCard);
 const filters = generateFilters(filmCards);
@@ -50,7 +54,7 @@ const renderFilmCard = (filmCardElement, card) => {
   };
 
   const onEscKeyDown = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
+    if (evt.key === EscapeKeyDown.ESCAPE || evt.key === EscapeKeyDown.ESC) {
       evt.preventDefault();
       hidePopup();
       document.removeEventListener('keydown', onEscKeyDown);
