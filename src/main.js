@@ -1,4 +1,4 @@
-import { render, RenderPosition } from './render.js';
+import { render, RenderPosition, remove} from './utils/render.js';
 import ProfileView from './view/profile-view.js';
 import MainNavigationView from './view/main-navigation-view.js';
 import SortView from './view/sort-view.js';
@@ -14,7 +14,7 @@ import { generateFilmCard } from './mock/movie-card.js';
 import { generateProfile } from './mock/profile.js';
 import { generateFilters } from './mock/filter.js';
 
-const MOVIE_COUNT = 25;
+const MOVIE_COUNT = 13;
 const MOVIE_COUNT_PER_STEP = 5;
 const EscapeKeyDown = {
   ESC: 'Esc',
@@ -29,14 +29,18 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-render(siteHeaderElement, new ProfileView(profile).element, RenderPosition.BEFOREEND);
-render(siteMainElement, new MainNavigationView().element, RenderPosition.BEFOREEND);
+const profileComponent = new ProfileView(profile);
+const navigationComponent = new MainNavigationView();
+
+render(siteHeaderElement, profileComponent, RenderPosition.BEFOREEND);
+render(siteMainElement, navigationComponent, RenderPosition.BEFOREEND);
 
 const siteNavigationElement = siteMainElement.querySelector('.main-navigation');
 const filtersComponent = new FilterView(filters);
-render(siteNavigationElement, filtersComponent.element, RenderPosition.BEFOREEND);
+const sortComponent = new SortView();
+render(siteNavigationElement, filtersComponent, RenderPosition.BEFOREEND);
 
-render(siteMainElement, new SortView().element, RenderPosition.BEFOREEND);
+render(siteMainElement, sortComponent, RenderPosition.BEFOREEND);
 
 const renderFilmCard = (filmCardElement, card) => {
   const filmCardComponent = new FilmCardView(card);
@@ -71,14 +75,15 @@ const renderFilmCard = (filmCardElement, card) => {
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  render(filmCardElement, filmCardComponent.element, RenderPosition.BEFOREEND);
+  render(filmCardElement, filmCardComponent, RenderPosition.BEFOREEND);
 };
 
 const renderList = (container, cards) => {
   const  activeFilterElement = filtersComponent.element.querySelector('.main-navigation__item--active');
 
   if (filmCards.length === 0) {
-    render(container, new EmptyFilmList(activeFilterElement).element, RenderPosition.BEFOREEND);
+    const emptyFilmList = new EmptyFilmList(activeFilterElement);
+    render(container, emptyFilmList, RenderPosition.BEFOREEND);
   } else {
     const filmListComponent = new FilmListView();
     render(container, filmListComponent.element, RenderPosition.BEFOREEND);
@@ -106,8 +111,7 @@ const renderList = (container, cards) => {
         renderFilmCount += MOVIE_COUNT_PER_STEP;
 
         if (renderFilmCount >= cards.length) {
-          loadMoreButtonComponent.element.remove();
-          loadMoreButtonComponent.removeElement();
+          remove(loadMoreButtonComponent);
         }
       });
     }
@@ -116,7 +120,10 @@ const renderList = (container, cards) => {
 
 renderList(siteMainElement,filmCards);
 
-render(siteMainElement, new FilmsExtraTemplate().element, RenderPosition.BEFOREEND);
+const extraFilms = new FilmsExtraTemplate();
+const footerStats = new FooterStatisticView();
+
+render(siteMainElement, extraFilms, RenderPosition.BEFOREEND);
 
 const FILMS_EXTRA_COUNT = 2;
 const siteFilmsExtra = document.querySelectorAll('.films-list--extra');
@@ -126,4 +133,4 @@ for (let i = 0; i < FILMS_EXTRA_COUNT; i++) {
   render(siteFilmsExtraContainerTopRated, new FilmCardView((filmCards[i])).element, RenderPosition.BEFOREEND);
 }
 
-render(siteFooterElement, new FooterStatisticView().element, RenderPosition.BEFOREEND);
+render(siteFooterElement, footerStats, RenderPosition.BEFOREEND);

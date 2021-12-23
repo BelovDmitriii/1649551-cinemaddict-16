@@ -1,4 +1,4 @@
-import { getRandomInteger } from '../util.js';
+import { getRandomInteger } from '../utils/common.js';
 
 const getRandomStatus = () => {
   const status = [
