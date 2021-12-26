@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from './abstract-view.js';
 
 const createFilmInfoTemplate = (filmCard) => {
   const {
@@ -89,7 +89,6 @@ const createFilmInfoTemplate = (filmCard) => {
                 <label class="film-details__comment-label">
                   <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${comments.comment}</textarea>
                 </label>
-                </div>
               </div>
             </section>
           </div>
@@ -97,26 +96,25 @@ const createFilmInfoTemplate = (filmCard) => {
       </section>`;
 };
 
-export default class FilmInfoView {
-  #element = null;
+export default class FilmInfoView extends AbstractView {
   #films = null;
 
   constructor(films) {
+    super();
     this.#films = films;
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-    return this.#element;
   }
 
   get template() {
     return createFilmInfoTemplate(this.#films);
   }
 
-  removeElement() {
-    this.#element = null;
+  setHideCardClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#clickHandler);
+  }
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 }

@@ -1,7 +1,7 @@
 const filmToFilterMap = {
-  watchList: (cards) => cards.filter((card) => card.isWatchlist).length,
-  history: (cards) => cards.filter((card) => card.isWatched).length,
-  favorites: (cards) => cards.filter((card) => card.isFavorite).length,
+  watchList: (cards) => cards.filter((card) => card.userDetails.isWatchlist).length,
+  history: (cards) => cards.filter((card) => card.userDetails.isWatched).length,
+  favorites: (cards) => cards.filter((card) => card.userDetails.isFavorite).length,
 };
 
 const generateFilters = (cards) => Object.entries(filmToFilterMap)

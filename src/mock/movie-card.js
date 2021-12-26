@@ -1,4 +1,5 @@
-import { getRandomFloatInteger, getRandomInteger, createRandomArray, generateDate } from '../util.js';
+import { getRandomFloatInteger, getRandomInteger, createRandomArray } from '../utils/common.js';
+import { generateDate } from '../utils/date.js';
 
 const ACTORS = [
   'Al Pacino',
