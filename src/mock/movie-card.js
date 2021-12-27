@@ -1,5 +1,7 @@
 import { getRandomFloatInteger, getRandomInteger, createRandomArray } from '../utils/common.js';
 import { generateDate } from '../utils/date.js';
+import { nanoid } from 'nanoid';
+
 
 const ACTORS = [
   'Al Pacino',
@@ -149,6 +151,19 @@ const generateCountry = () => {
   return country[randomIndex];
 };
 
+const generateFilmComment = () => ({
+  id: nanoid(),
+  author: generateRandomAuthor(),
+  comment: generateRandomComment(),
+  date: generateDate(),
+  emotion: createEmotion()
+});
+
+const getRandomComments = (min = 0, max = 7) => {
+  const randomIndex = getRandomInteger(min, max);
+  return Array.from({ length: randomIndex }, generateFilmComment);
+};
+
 const generateAge = () => {
   const age = [
     '0+',
@@ -165,13 +180,8 @@ const generateAge = () => {
 const generateDuration = (time) => Math.floor(time/60);
 
 export const generateFilmCard = () => ({
-  comments: {
-    id: getRandomInteger(0, 50),
-    author: generateRandomAuthor(),
-    comment: generateRandomComment(),
-    date: generateDate(),
-    emotion: createEmotion()
-  },
+  id: nanoid(),
+  comments: getRandomComments(0, 7),
   filmInfo: {
     title: generateRandomTitle(),
     alternativeTitle: generateRandomTitle(),

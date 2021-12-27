@@ -10,11 +10,11 @@ import FilterView from './view/filter-view.js';
 import FilmsExtraTemplate from './view/films-extra-view.js';
 import FilmInfoView from './view/popup-film-info-view.js';
 import EmptyFilmList from './view/film-list-empty-view.js';
-import { generateFilmCard } from './mock/movie-card.js';
+import { generateFilmCard} from './mock/movie-card.js';
 import { generateProfile } from './mock/profile.js';
 import { generateFilters } from './mock/filter.js';
 
-const MOVIE_COUNT = 13;
+const MOVIE_COUNT = 24;
 const MOVIE_COUNT_PER_STEP = 5;
 const EscapeKeyDown = {
   ESC: 'Esc',
