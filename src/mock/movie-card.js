@@ -195,7 +195,10 @@ export const generateFilmCard = () => ({
       date: generateDate(),
       releaseCountry: generateCountry()
     },
-    runtime: generateDuration(getRandomInteger(FilmLength.MIN, FilmLength.MAX)),
+    runtime: {
+      hours: generateDuration(getRandomInteger(FilmLength.MIN, FilmLength.MAX)),
+      minutes: getRandomInteger(0, 60)
+    },
     genre: generateGenre(),
     description: generateDescription(),
   },

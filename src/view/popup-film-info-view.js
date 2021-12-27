@@ -53,7 +53,7 @@ const createFilmInfoTemplate = (filmCard) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${filmInfo.runtime}h ${filmInfo.runtime}m</td>
+                  <td class="film-details__cell">${filmInfo.runtime.hours}h ${filmInfo.runtime.minutes}m</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
