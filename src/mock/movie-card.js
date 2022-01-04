@@ -20,7 +20,7 @@ const WRITERS = [
 
 const FilmLength = {
   MIN: 60,
-  MAX: 300
+  MAX: 240
 };
 
 const generateRandomAuthor = () => {
