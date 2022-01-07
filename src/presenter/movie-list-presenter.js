@@ -7,6 +7,10 @@ import EmptyFilmList from '../view/film-list-empty-view.js';
 import { render, RenderPosition, replace, remove } from '../utils/render.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
+const EscapeKeyDown = {
+  ESC: 'Esc',
+  ESCAPE: 'Escape'
+};
 
 export default class MovieListPresenter {
   #mainContainer = null;
@@ -14,8 +18,6 @@ export default class MovieListPresenter {
   #footerContainer = null;
 
   #filmListComponent = new FilmListView();
-  #filmCardComponent = new FilmCardView();
-  #filmPopupComponent = new FilmInfoView()
   #filmSortComponent = new SortView();
   #showMoreButtonComponent = new ShowMoreButtonView();
   #emptyFilmList = new EmptyFilmList();
@@ -34,7 +36,6 @@ export default class MovieListPresenter {
     this.#filmComments = [...filmComments];
 
     render(this.#mainContainer, this.#filmListComponent, RenderPosition.BEFOREEND);
-    render(this.#filmListComponent, this.#filmCardComponent, RenderPosition.BEFOREEND);
 
     this.#renderFilmList();
   }
@@ -47,9 +48,47 @@ export default class MovieListPresenter {
 
   }
 
-  #renderCard = (card, comments) => {
 
+
+
+  #renderCard = (filmCardElement, card) => {
+    const filmCardComponent = new FilmCardView(card);
+    const filmPopupComponent = new FilmInfoView(card);
+    const bodyElement = document.querySelector('body');
+
+    const showPopup = ()=> {
+      filmCardElement.appendChild(filmPopupComponent.element);
+      bodyElement.classList.add('hide-overflow');
+    };
+
+    const hidePopup = ()=> {
+      filmCardElement.removeChild(filmPopupComponent.element);
+      bodyElement.classList.remove('hide-overflow');
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === EscapeKeyDown.ESCAPE || evt.key === EscapeKeyDown.ESC) {
+        evt.preventDefault();
+        hidePopup();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    filmCardComponent.setOpenCardClickHandler(() => {
+      showPopup();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    filmPopupComponent.setHideCardClickHandler(() => {
+      hidePopup();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    render(filmCardElement, filmCardComponent, RenderPosition.BEFOREEND);
   }
+
+
+
 
   #renderFilmCards = (from, to) => {
     this.#filmCards
@@ -73,13 +112,11 @@ export default class MovieListPresenter {
     if (this.#filmCards.length === 0) {
       this.#renderEmptyFilms();
       return;
+    }   else {
+      render(this.#mainContainer, this.#filmListComponent, RenderPosition.BEFOREEND);
     }
+
     this.#renderSort();
-
-    if(this.#filmCards.length) {
-      render(this.#filmListComponent, this.#filmCardComponent, RenderPosition.BEFOREEND);
-    }
-
     this.#renderFilmCardList();
   }
 }
