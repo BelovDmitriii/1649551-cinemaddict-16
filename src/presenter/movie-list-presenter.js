@@ -22,6 +22,7 @@ export default class MovieListPresenter {
   #filmComments = [];
 
   #renderMovieCount = MOVIE_COUNT_PER_STEP;
+  #cardPresenterMap = new Map();
 
   constructor (mainContainer, footerContainer) {
     this.#mainContainer = mainContainer;
@@ -68,15 +69,22 @@ export default class MovieListPresenter {
   }
 
   #renderShowMoreButton = () => {
-    render(this.#filmListComponent,this.#showMoreButtonComponent, RenderPosition.BEFOREEND);
+    render(this.#filmsList,this.#showMoreButtonComponent, RenderPosition.BEFOREEND);
     this.#showMoreButtonComponent.setShowMoreButtonClickHandler(this.#handleLoadMoreButtonClick);
   }
 
+  #clearFilmCardsList = () => {
+    this.#cardPresenterMap.forEach((presenter) => presenter.destroyCardComponents());
+    this.#cardPresenterMap.clear();
+    this.#renderMovieCount = MOVIE_COUNT_PER_STEP;
+    remove(this.#showMoreButtonComponent);
+  }
 
   #renderCard = (card, comments) => {
-    const cardPresenter = new MovieCardPresenter (this.#filmsListContainer, this.#footerContainer, this.#handleCloseOldPopup);
+    const cardPresenter = new MovieCardPresenter (this.#filmsListContainer, this.#mainContainer, this.#handleCloseOldPopup);
 
     cardPresenter.init(card, comments);
+    this.#cardPresenterMap.set(card.id, cardPresenter);
   }
 
   #renderEmptyFilms = () => {
@@ -95,7 +103,7 @@ export default class MovieListPresenter {
     if (this.#filmCards.length === 0) {
       this.#renderEmptyFilms();
       return;
-    }   else {
+    }else {
       render(this.#mainContainer, this.#filmListComponent, RenderPosition.BEFOREEND);
     }
 

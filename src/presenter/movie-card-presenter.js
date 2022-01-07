@@ -19,10 +19,9 @@ export default class MovieCardPresenter {
   #filmCard = null;
   #comments = null;
 
-  constructor(filmsListContainer, mainContainer, changeCardData, handleCloseOldPopup) {
+  constructor(filmsListContainer, mainContainer, handleCloseOldPopup) {
     this.#filmsListContainer = filmsListContainer;
     this.#mainContainer = mainContainer;
-    this.#changeCardData = changeCardData;
     this.#handleCloseOldPopup = handleCloseOldPopup;
   }
 
