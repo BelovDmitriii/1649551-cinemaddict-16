@@ -42,6 +42,9 @@ render(siteNavigationElement, filtersComponent, RenderPosition.BEFOREEND);
 
 render(siteMainElement, sortComponent, RenderPosition.BEFOREEND);
 
+
+
+
 const renderFilmCard = (filmCardElement, card) => {
   const filmCardComponent = new FilmCardView(card);
   const filmPopupComponent = new FilmInfoView(card);
