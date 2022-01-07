@@ -19,7 +19,6 @@ export default class MovieListPresenter {
 
   #filmListComponent = new FilmListView();
   #filmSortComponent = new SortView();
-  #showMoreButtonComponent = new ShowMoreButtonView();
   #emptyFilmList = new EmptyFilmList();
 
   #filmCards = [];
@@ -45,7 +44,22 @@ export default class MovieListPresenter {
   }
 
   #renderShowMoreButton = () => {
+    let renderedFilmCount = MOVIE_COUNT_PER_STEP;
+    const showMoreButtonComponent = new ShowMoreButtonView();
 
+    render(this.#filmListComponent, showMoreButtonComponent, RenderPosition.BEFOREEND);
+
+    showMoreButtonComponent.setShowMoreButtonClickHandler(() => {
+      this.#filmCards
+        .slice(renderedFilmCount, renderedFilmCount + MOVIE_COUNT_PER_STEP)
+        .forEach((filmCard) => this.#renderCard(filmCard));
+
+      renderedFilmCount += MOVIE_COUNT_PER_STEP;
+
+      if (renderedFilmCount >= this.#filmCards.length) {
+        remove(showMoreButtonComponent);
+      }
+    });
   }
 
 
