@@ -4,7 +4,7 @@ import ShowMoreButtonView from '../view/show-more-button-view.js';
 import FilmCardView from '../view/film-card-view.js';
 import FilmInfoView from '../view/popup-film-info-view.js';
 import EmptyFilmList from '../view/film-list-empty-view.js';
-import { render, RenderPosition, replace, remove } from '../utils/render.js';
+import { render, RenderPosition, remove } from '../utils/render.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 const EscapeKeyDown = {
@@ -15,14 +15,17 @@ const EscapeKeyDown = {
 export default class MovieListPresenter {
   #mainContainer = null;
   #filmsList = null;
+  #filmsListContainer = null;
   #footerContainer = null;
 
   #filmListComponent = new FilmListView();
   #filmSortComponent = new SortView();
   #emptyFilmList = new EmptyFilmList();
+  #showMoreButtonComponent = new ShowMoreButtonView();
 
   #filmCards = [];
   #filmComments = [];
+
   #renderMovieCount = MOVIE_COUNT_PER_STEP;
 
   constructor (mainContainer, footerContainer) {
@@ -30,11 +33,15 @@ export default class MovieListPresenter {
     this.#footerContainer = footerContainer;
   }
 
-  init = (filmCards, filmComments) => {
+  init = (filmCards) => {
     this.#filmCards = [...filmCards];
-    this.#filmComments = [...filmComments];
+    //this.#filmComments = [...filmComments];
 
-    render(this.#mainContainer, this.#filmListComponent, RenderPosition.BEFOREEND);
+    this.#filmsList = this.#filmListComponent.element.querySelector('.films-list');
+    this.#filmsListContainer = this.#filmListComponent.element.querySelector('.films-list__container');
+
+    render(this.#mainContainer, this.#filmsListContainer, RenderPosition.BEFOREEND);
+    render(this.#filmsListContainer, this.#filmListComponent, RenderPosition.BEFOREEND);
 
     this.#renderFilmList();
   }
@@ -43,27 +50,25 @@ export default class MovieListPresenter {
     render (this.#filmListComponent, this.#filmSortComponent, RenderPosition.AFTERBEGIN);
   }
 
-  #renderShowMoreButton = () => {
-    let renderedFilmCount = MOVIE_COUNT_PER_STEP;
-    const showMoreButtonComponent = new ShowMoreButtonView();
-
-    render(this.#filmListComponent, showMoreButtonComponent, RenderPosition.BEFOREEND);
-
-    showMoreButtonComponent.setShowMoreButtonClickHandler(() => {
-      this.#filmCards
-        .slice(renderedFilmCount, renderedFilmCount + MOVIE_COUNT_PER_STEP)
-        .forEach((filmCard) => this.#renderCard(filmCard));
-
-      renderedFilmCount += MOVIE_COUNT_PER_STEP;
-
-      if (renderedFilmCount >= this.#filmCards.length) {
-        remove(showMoreButtonComponent);
-      }
-    });
+  #renderFilmCards = (from, to) => {
+    this.#filmCards
+      .slice(from, to)
+      .forEach((card) => this.#renderCard(card, this.#filmComments));
   }
 
+  #handleLoadMoreButtonClick = () => {
+    this.#renderFilmCards(this.#renderMovieCount, this.#renderMovieCount + MOVIE_COUNT_PER_STEP);
+    this.#renderMovieCount += MOVIE_COUNT_PER_STEP;
 
+    if(this.#renderMovieCount >= this.#filmCards.length) {
+      remove(this.#showMoreButtonComponent);
+    }
+  }
 
+  #renderShowMoreButton = () => {
+    render(this.#filmListComponent,this.#showMoreButtonComponent, RenderPosition.BEFOREEND);
+    this.#showMoreButtonComponent.setShowMoreButtonClickHandler(this.#handleLoadMoreButtonClick);
+  }
 
   #renderCard = (filmCardElement, card) => {
     const filmCardComponent = new FilmCardView(card);
@@ -99,15 +104,6 @@ export default class MovieListPresenter {
     });
 
     render(filmCardElement, filmCardComponent, RenderPosition.BEFOREEND);
-  }
-
-
-
-
-  #renderFilmCards = (from, to) => {
-    this.#filmCards
-      .slice(from, to)
-      .forEach((card) => this.#renderCard(card, this.#filmComments));
   }
 
   #renderEmptyFilms = () => {
