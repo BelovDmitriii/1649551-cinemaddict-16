@@ -24,14 +24,12 @@ export default class MovieListPresenter {
   #renderMovieCount = MOVIE_COUNT_PER_STEP;
   #cardPresenterMap = new Map();
 
-  constructor (mainContainer, footerContainer) {
+  constructor (mainContainer) {
     this.#mainContainer = mainContainer;
-    this.#footerContainer = footerContainer;
   }
 
   init = (filmCards) => {
     this.#filmCards = [...filmCards];
-    //this.#filmComments = [...filmComments];
 
     this.#filmsList = this.#filmListComponent.element.querySelector('.films-list');
     this.#filmsListContainer = this.#filmListComponent.element.querySelector('.films-list__container');
@@ -42,21 +40,32 @@ export default class MovieListPresenter {
     this.#renderFilmList();
   }
 
-  #handleCloseOldPopup = () => {
-    const oldPopup = document.querySelector('.film-details');
-    if (oldPopup) {
-      oldPopup.remove();
-    }
+  #renderSort = () => {
+    render (this.#mainContainer, this.#filmSortComponent, RenderPosition.AFTERBEGIN);
   }
 
-  #renderSort = () => {
-    render (this.#filmListComponent, this.#filmSortComponent, RenderPosition.AFTERBEGIN);
+  #renderCard = (card, comments) => {
+    const cardPresenter = new MovieCardPresenter(this.#filmsListContainer, this.#mainContainer, this.#handleCloseOldPopup);
+
+    cardPresenter.init(card, comments);
+    this.#cardPresenterMap.set(card.id, cardPresenter);
   }
 
   #renderFilmCards = (from, to) => {
     this.#filmCards
       .slice(from, to)
       .forEach((card) => this.#renderCard(card, this.#filmComments));
+  }
+
+  #renderEmptyFilms = () => {
+    render(this.#mainContainer, this.#emptyFilmList, RenderPosition.BEFOREEND);
+  }
+
+  #handleCloseOldPopup = () => {
+    const oldPopup = document.querySelector('.film-details');
+    if (oldPopup) {
+      oldPopup.remove();
+    }
   }
 
   #handleLoadMoreButtonClick = () => {
@@ -78,17 +87,6 @@ export default class MovieListPresenter {
     this.#cardPresenterMap.clear();
     this.#renderMovieCount = MOVIE_COUNT_PER_STEP;
     remove(this.#showMoreButtonComponent);
-  }
-
-  #renderCard = (card, comments) => {
-    const cardPresenter = new MovieCardPresenter (this.#filmsListContainer, this.#mainContainer, this.#handleCloseOldPopup);
-
-    cardPresenter.init(card, comments);
-    this.#cardPresenterMap.set(card.id, cardPresenter);
-  }
-
-  #renderEmptyFilms = () => {
-    render(this.#filmListComponent, this.#emptyFilmList, RenderPosition.AFTERBEGIN);
   }
 
   #renderFilmCardList = () => {

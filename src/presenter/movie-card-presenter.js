@@ -34,6 +34,7 @@ export default class MovieCardPresenter {
 
     this.#filmCardComponent = new FilmCardView(filmCard);
     this.#filmPopupComponent = new FilmInfoView(filmCard, comments);
+    this.#bodyElement = document.querySelector('body');
 
     this.#filmCardComponent.setOpenCardClickHandler(this.#handleFilmCardClick);
     this.#filmPopupComponent.setHideCardClickHandler(this.#handleCloseButtonClick);
