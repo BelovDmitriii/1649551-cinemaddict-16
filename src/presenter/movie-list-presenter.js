@@ -4,6 +4,7 @@ import ShowMoreButtonView from '../view/show-more-button-view.js';
 import EmptyFilmList from '../view/film-list-empty-view.js';
 import { render, RenderPosition, remove } from '../utils/render.js';
 import MovieCardPresenter from './movie-card-presenter.js';
+import { updateItem } from '../utils/common.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 
@@ -40,12 +41,17 @@ export default class MovieListPresenter {
     this.#renderFilmList();
   }
 
+  #handleCardChange = (updatedCard) => {
+    this.#filmCards = updateItem(this.#filmCards, updatedCard);
+    this.#cardPresenterMap.get(updatedCard.id).init(updatedCard, this.#filmComments);
+  }
+
   #renderSort = () => {
     render (this.#mainContainer, this.#filmSortComponent, RenderPosition.AFTERBEGIN);
   }
 
   #renderCard = (card, comments) => {
-    const cardPresenter = new MovieCardPresenter(this.#filmsListContainer, this.#mainContainer, this.#handleCloseOldPopup);
+    const cardPresenter = new MovieCardPresenter(this.#filmsListContainer, this.#mainContainer, this.#handleCardChange, this.#handleCloseOldPopup);
 
     cardPresenter.init(card, comments);
     this.#cardPresenterMap.set(card.id, cardPresenter);
@@ -83,7 +89,7 @@ export default class MovieListPresenter {
   }
 
   #clearFilmCardsList = () => {
-    this.#cardPresenterMap.forEach((presenter) => presenter.destroyCardComponents());
+    this.#cardPresenterMap.forEach((presenter) => presenter.destroy());
     this.#cardPresenterMap.clear();
     this.#renderMovieCount = MOVIE_COUNT_PER_STEP;
     remove(this.#showMoreButtonComponent);
