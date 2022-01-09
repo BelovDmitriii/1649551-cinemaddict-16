@@ -12,7 +12,6 @@ export default class MovieListPresenter {
   #mainContainer = null;
   #filmsList = null;
   #filmsListContainer = null;
-  #footerContainer = null;
 
   #filmListComponent = new FilmListView();
   #filmSortComponent = new SortView();
@@ -41,6 +40,10 @@ export default class MovieListPresenter {
     this.#renderFilmList();
   }
 
+  #handleModeChange = () => {
+    this.#cardPresenterMap.forEach((presenter) => presenter.resetView());
+  }
+
   #handleCardChange = (updatedCard) => {
     this.#filmCards = updateItem(this.#filmCards, updatedCard);
     this.#cardPresenterMap.get(updatedCard.id).init(updatedCard, this.#filmComments);
@@ -51,7 +54,7 @@ export default class MovieListPresenter {
   }
 
   #renderCard = (card, comments) => {
-    const cardPresenter = new MovieCardPresenter(this.#filmsListContainer, this.#mainContainer, this.#handleCardChange, this.#handleCloseOldPopup);
+    const cardPresenter = new MovieCardPresenter(this.#filmsListContainer, this.#mainContainer, this.#handleCardChange, this.#handleModeChange);
 
     cardPresenter.init(card, comments);
     this.#cardPresenterMap.set(card.id, cardPresenter);
@@ -65,13 +68,6 @@ export default class MovieListPresenter {
 
   #renderEmptyFilms = () => {
     render(this.#mainContainer, this.#emptyFilmList, RenderPosition.BEFOREEND);
-  }
-
-  #handleCloseOldPopup = () => {
-    const oldPopup = document.querySelector('.film-details');
-    if (oldPopup) {
-      oldPopup.remove();
-    }
   }
 
   #handleLoadMoreButtonClick = () => {

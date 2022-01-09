@@ -7,6 +7,11 @@ const EscapeKeyDown = {
   ESCAPE: 'Escape'
 };
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
 export default class MovieCardPresenter {
   #filmCardComponent = null;
   #filmPopupComponent = null;
@@ -15,15 +20,17 @@ export default class MovieCardPresenter {
   #bodyElement = null;
   #changeCardData = null;
   #handleCloseOldPopup = null;
+  #changeMode = null;
 
   #filmCard = null;
   #comments = null;
+  #mode = Mode.DEFAULT;
 
-  constructor(filmsListContainer, mainContainer, changeCardData, handleCloseOldPopup) {
+  constructor(filmsListContainer, mainContainer, changeCardData, changeMode) {
     this.#filmsListContainer = filmsListContainer;
     this.#mainContainer = mainContainer;
     this.#changeCardData = changeCardData;
-    this.#handleCloseOldPopup = handleCloseOldPopup;
+    this.#changeMode = changeMode;
   }
 
   init (filmCard, comments) {
@@ -53,11 +60,12 @@ export default class MovieCardPresenter {
       return;
     }
 
-    if (this.#filmsListContainer.contains(prevfilmCardComponent.element)) {
+    if (this.#mode === Mode.DEFAULT){
       replace(this.#filmCardComponent, prevfilmCardComponent);
     }
 
-    if (this.#bodyElement.contains(prevfilmPopupComponent.element)) {
+    if (this.#mode === Mode.EDITING){
+      replace(this.#filmCardComponent, prevfilmCardComponent);
       replace(this.#filmPopupComponent, prevfilmPopupComponent);
     }
 
@@ -70,20 +78,24 @@ export default class MovieCardPresenter {
     remove(this.#filmPopupComponent);
   }
 
-  #closePreviousPopup = () => {
-    this.#handleCloseOldPopup();
+  resetView = () => {
+    if (this.#mode !== Mode.DEFAULT) {
+      this.#closeCardPopup();
+    }
   }
 
   #showCardPopup = () => {
-    this.#closePreviousPopup();
     this.#bodyElement.classList.add('hide-overflow');
-    render(this.#mainContainer, this.#filmPopupComponent, RenderPosition.AFTEREND);
+    render(this.#mainContainer, this.#filmPopupComponent, RenderPosition.BEFOREEND);
+    this.#changeMode();
+    this.#mode = Mode.EDITING;
   }
 
   #closeCardPopup = () => {
     this.#bodyElement.classList.remove('hide-overflow');
     this.#filmPopupComponent.element.remove();
     document.removeEventListener('keydown', this.#onEscKeyDown);
+    this.#mode = Mode.DEFAULT;
   }
 
   #onEscKeyDown = (evt) => {
