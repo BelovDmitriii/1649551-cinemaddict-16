@@ -13,7 +13,7 @@ const findActiveTitleName = (activeFilterElement) => {
   return activeFilterName;
 };
 
-const createTitleName = (activeFilterElement)=> TitleNames[findActiveTitleName(activeFilterElement).toUpperCase()];
+const createTitleName = (activeFilterElement) => TitleNames[findActiveTitleName(activeFilterElement).toUpperCase()];
 
 const createEmptyFilmListTemplate = (activeFilterElement) => (
   `<section class="films">

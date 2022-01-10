@@ -1,5 +1,7 @@
 import { getRandomFloatInteger, getRandomInteger, createRandomArray } from '../utils/common.js';
 import { generateDate } from '../utils/date.js';
+import { nanoid } from 'nanoid';
+
 
 const ACTORS = [
   'Al Pacino',
@@ -18,7 +20,7 @@ const WRITERS = [
 
 const FilmLength = {
   MIN: 60,
-  MAX: 300
+  MAX: 240
 };
 
 const generateRandomAuthor = () => {
@@ -149,6 +151,19 @@ const generateCountry = () => {
   return country[randomIndex];
 };
 
+const generateFilmComment = () => ({
+  id: nanoid(),
+  author: generateRandomAuthor(),
+  comment: generateRandomComment(),
+  date: generateDate(),
+  emotion: createEmotion()
+});
+
+const getRandomComments = (min = 0, max = 7) => {
+  const randomIndex = getRandomInteger(min, max);
+  return Array.from({ length: randomIndex }, generateFilmComment);
+};
+
 const generateAge = () => {
   const age = [
     '0+',
@@ -165,13 +180,8 @@ const generateAge = () => {
 const generateDuration = (time) => Math.floor(time/60);
 
 export const generateFilmCard = () => ({
-  comments: {
-    id: getRandomInteger(0, 50),
-    author: generateRandomAuthor(),
-    comment: generateRandomComment(),
-    date: generateDate(),
-    emotion: createEmotion()
-  },
+  id: nanoid(),
+  comments: getRandomComments(0, 7),
   filmInfo: {
     title: generateRandomTitle(),
     alternativeTitle: generateRandomTitle(),
@@ -185,7 +195,10 @@ export const generateFilmCard = () => ({
       date: generateDate(),
       releaseCountry: generateCountry()
     },
-    runtime: generateDuration(getRandomInteger(FilmLength.MIN, FilmLength.MAX)),
+    runtime: {
+      hours: generateDuration(getRandomInteger(FilmLength.MIN, FilmLength.MAX)),
+      minutes: getRandomInteger(0, 60)
+    },
     genre: generateGenre(),
     description: generateDescription(),
   },
