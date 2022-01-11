@@ -19,7 +19,6 @@ export default class MovieCardPresenter {
   #mainContainer = null;
   #bodyElement = null;
   #changeCardData = null;
-  #handleCloseOldPopup = null;
   #changeMode = null;
 
   #filmCard = null;
@@ -33,15 +32,14 @@ export default class MovieCardPresenter {
     this.#changeMode = changeMode;
   }
 
-  init (filmCard, comments) {
+  init (filmCard) {
     this.#filmCard = filmCard;
-    this.#comments = [...comments];
 
     const prevfilmCardComponent = this.#filmCardComponent;
     const prevfilmPopupComponent = this.#filmPopupComponent;
 
     this.#filmCardComponent = new FilmCardView(filmCard);
-    this.#filmPopupComponent = new FilmInfoView(filmCard, comments);
+    this.#filmPopupComponent = new FilmInfoView(filmCard);
     this.#bodyElement = document.querySelector('body');
 
     this.#filmCardComponent.setOpenCardClickHandler(this.#handleFilmCardClick);
@@ -85,9 +83,14 @@ export default class MovieCardPresenter {
   }
 
   #showCardPopup = () => {
+    const oldPopup = document.querySelector('.film-details');
+    if (oldPopup) {
+      return;
+    }
     this.#bodyElement.classList.add('hide-overflow');
     render(this.#mainContainer, this.#filmPopupComponent, RenderPosition.BEFOREEND);
     this.#changeMode();
+    document.addEventListener('keydown', this.#onEscKeyDown);
     this.#mode = Mode.EDITING;
   }
 
@@ -126,4 +129,5 @@ export default class MovieCardPresenter {
   #handleWatchlistClick = () => {
     this.#changeCardData({...this.#filmCard, userDetails: {...this.#filmCard.userDetails, isWatchlist: !this.#filmCard.userDetails.isWatchlist}});
   }
+
 }

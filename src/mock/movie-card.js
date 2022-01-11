@@ -192,7 +192,7 @@ export const generateFilmCard = () => ({
     writers: createRandomArray(WRITERS),
     actors: createRandomArray(ACTORS),
     release: {
-      date: generateDate(),
+      date: getRandomInteger(1970, 2021),
       releaseCountry: generateCountry()
     },
     runtime: {
