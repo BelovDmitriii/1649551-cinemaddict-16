@@ -33,10 +33,15 @@ const createFilterTemplate = (filters) => {
     .map((filter) => createFilterItemTemplate(filter))
     .join('');
 
-  return `<div class="main-navigation__items">
+  return `<nav class="main-navigation">
+     <div class="main-navigation__items">
       ${createAllMoviesTemplate()}
       ${filterItemsTemplate}
-    </div>`;
+    </div>
+
+    <a href="#stats" class="main-navigation__additional">Stats</a>
+    </nav>`;
+
 };
 
 export default class FilterView extends AbstractView {

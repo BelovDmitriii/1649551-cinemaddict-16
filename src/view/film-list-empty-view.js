@@ -7,13 +7,13 @@ const TitleNames = {
   FAVORITES: 'There are no favorite movies now'
 };
 
-const findActiveTitleName = (activeFilterElement) => {
+export const findActiveTitleName = (activeFilterElement) => {
   const elementIndex = activeFilterElement.textContent.indexOf(' ');
   const activeFilterName = activeFilterElement.textContent.slice(0,elementIndex);
   return activeFilterName;
 };
 
-const createTitleName = (activeFilterElement) => TitleNames[findActiveTitleName(activeFilterElement).toUpperCase()];
+const createTitleName = (activeFilterElement) => TitleNames(findActiveTitleName(activeFilterElement).toUpperCase());
 
 const createEmptyFilmListTemplate = (activeFilterElement) => (
   `<section class="films">

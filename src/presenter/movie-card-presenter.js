@@ -22,7 +22,6 @@ export default class MovieCardPresenter {
   #changeMode = null;
 
   #filmCard = null;
-  #comments = null;
   #mode = Mode.DEFAULT;
 
   constructor(filmsListContainer, mainContainer, changeCardData, changeMode) {
@@ -83,12 +82,8 @@ export default class MovieCardPresenter {
   }
 
   #showCardPopup = () => {
-    const oldPopup = document.querySelector('.film-details');
-    if (oldPopup) {
-      return;
-    }
-    this.#bodyElement.classList.add('hide-overflow');
     render(this.#mainContainer, this.#filmPopupComponent, RenderPosition.BEFOREEND);
+    this.#bodyElement.classList.add('hide-overflow');
     this.#changeMode();
     document.addEventListener('keydown', this.#onEscKeyDown);
     this.#mode = Mode.EDITING;
@@ -109,8 +104,10 @@ export default class MovieCardPresenter {
   }
 
   #handleFilmCardClick = () => {
-    this.#showCardPopup();
-    document.addEventListener('keydown', this.#onEscKeyDown);
+    if (!document.body.contains(this.#filmPopupComponent.element)) {
+      this.#closeCardPopup();
+      this.#showCardPopup();
+    }
   }
 
   #handleCloseButtonClick = () => {
@@ -119,15 +116,48 @@ export default class MovieCardPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#changeCardData({...this.#filmCard, userDetails: {...this.#filmCard.userDetails, isFavorite: !this.#filmCard.userDetails.isFavorite}});
+    this.#changeCardData(Object.assign(
+      {},
+      this.#filmCard,
+      {
+        userDetails: {
+          isWatchlist: this.#filmCard.userDetails.isWatchlist,
+          isWatched: this.#filmCard.userDetails.isWatched,
+          watchingDate: this.#filmCard.userDetails.watchingDate,
+          isFavorite: !this.#filmCard.userDetails.isFavorite
+        }
+      }
+    ));
   }
 
   #handleWatchedClick = () => {
-    this.#changeCardData({...this.#filmCard, userDetails: {...this.#filmCard.userDetails, isWatched: !this.#filmCard.userDetails.isWatched}});
+    this.#changeCardData(Object.assign(
+      {},
+      this.#filmCard,
+      {
+        userDetails: {
+          isWatchlist: this.#filmCard.userDetails.isWatchlist,
+          isWatched: !this.#filmCard.userDetails.isWatched,
+          watchingDate: this.#filmCard.userDetails.watchingDate,
+          isFavorite: this.#filmCard.userDetails.isFavorite,
+        }
+      }
+    ));
   }
 
   #handleWatchlistClick = () => {
-    this.#changeCardData({...this.#filmCard, userDetails: {...this.#filmCard.userDetails, isWatchlist: !this.#filmCard.userDetails.isWatchlist}});
+    this.#changeCardData(Object.assign(
+      {},
+      this.#filmCard,
+      {
+        userDetails: {
+          isWatchlist: !this.#filmCard.userDetails.isWatchlist,
+          isWatched: this.#filmCard.userDetails.isWatched,
+          watchingDate: this.#filmCard.userDetails.watchingDate,
+          isFavorite: this.#filmCard.userDetails.isFavorite,
+        }
+      }
+    ));
   }
 
 }
