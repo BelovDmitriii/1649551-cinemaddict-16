@@ -19,11 +19,9 @@ export default class MovieCardPresenter {
   #mainContainer = null;
   #bodyElement = null;
   #changeCardData = null;
-  #handleCloseOldPopup = null;
   #changeMode = null;
 
   #filmCard = null;
-  #comments = null;
   #mode = Mode.DEFAULT;
 
   constructor(filmsListContainer, mainContainer, changeCardData, changeMode) {
@@ -33,15 +31,14 @@ export default class MovieCardPresenter {
     this.#changeMode = changeMode;
   }
 
-  init (filmCard, comments) {
+  init (filmCard) {
     this.#filmCard = filmCard;
-    this.#comments = [...comments];
 
     const prevfilmCardComponent = this.#filmCardComponent;
     const prevfilmPopupComponent = this.#filmPopupComponent;
 
     this.#filmCardComponent = new FilmCardView(filmCard);
-    this.#filmPopupComponent = new FilmInfoView(filmCard, comments);
+    this.#filmPopupComponent = new FilmInfoView(filmCard);
     this.#bodyElement = document.querySelector('body');
 
     this.#filmCardComponent.setOpenCardClickHandler(this.#handleFilmCardClick);
@@ -85,9 +82,10 @@ export default class MovieCardPresenter {
   }
 
   #showCardPopup = () => {
-    this.#bodyElement.classList.add('hide-overflow');
     render(this.#mainContainer, this.#filmPopupComponent, RenderPosition.BEFOREEND);
+    this.#bodyElement.classList.add('hide-overflow');
     this.#changeMode();
+    document.addEventListener('keydown', this.#onEscKeyDown);
     this.#mode = Mode.EDITING;
   }
 
@@ -106,8 +104,10 @@ export default class MovieCardPresenter {
   }
 
   #handleFilmCardClick = () => {
-    this.#showCardPopup();
-    document.addEventListener('keydown', this.#onEscKeyDown);
+    if (!document.body.contains(this.#filmPopupComponent.element)) {
+      this.#closeCardPopup();
+      this.#showCardPopup();
+    }
   }
 
   #handleCloseButtonClick = () => {
@@ -116,14 +116,48 @@ export default class MovieCardPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#changeCardData({...this.#filmCard, userDetails: {...this.#filmCard.userDetails, isFavorite: !this.#filmCard.userDetails.isFavorite}});
+    this.#changeCardData(Object.assign(
+      {},
+      this.#filmCard,
+      {
+        userDetails: {
+          isWatchlist: this.#filmCard.userDetails.isWatchlist,
+          isWatched: this.#filmCard.userDetails.isWatched,
+          watchingDate: this.#filmCard.userDetails.watchingDate,
+          isFavorite: !this.#filmCard.userDetails.isFavorite
+        }
+      }
+    ));
   }
 
   #handleWatchedClick = () => {
-    this.#changeCardData({...this.#filmCard, userDetails: {...this.#filmCard.userDetails, isWatched: !this.#filmCard.userDetails.isWatched}});
+    this.#changeCardData(Object.assign(
+      {},
+      this.#filmCard,
+      {
+        userDetails: {
+          isWatchlist: this.#filmCard.userDetails.isWatchlist,
+          isWatched: !this.#filmCard.userDetails.isWatched,
+          watchingDate: this.#filmCard.userDetails.watchingDate,
+          isFavorite: this.#filmCard.userDetails.isFavorite,
+        }
+      }
+    ));
   }
 
   #handleWatchlistClick = () => {
-    this.#changeCardData({...this.#filmCard, userDetails: {...this.#filmCard.userDetails, isWatchlist: !this.#filmCard.userDetails.isWatchlist}});
+    this.#changeCardData(Object.assign(
+      {},
+      this.#filmCard,
+      {
+        userDetails: {
+          isWatchlist: !this.#filmCard.userDetails.isWatchlist,
+          isWatched: this.#filmCard.userDetails.isWatched,
+          watchingDate: this.#filmCard.userDetails.watchingDate,
+          isFavorite: this.#filmCard.userDetails.isFavorite,
+        }
+      }
+    ));
   }
+
 }
