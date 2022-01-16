@@ -9,7 +9,7 @@ import { generateProfile } from './mock/profile.js';
 import { generateFilters } from './mock/filter.js';
 import MovieListPresenter from './presenter/movie-list-presenter.js';
 
-const MOVIE_COUNT = 35;
+const MOVIE_COUNT = 40;
 
 const filmCards = Array.from({length: MOVIE_COUNT}, generateFilmCard);
 const filters = generateFilters(filmCards);

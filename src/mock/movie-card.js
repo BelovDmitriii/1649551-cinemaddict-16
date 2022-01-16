@@ -121,8 +121,8 @@ const generateGenre = () => {
     'Comedy',
   ];
 
-  const randomIndex = getRandomInteger(0, genres.length - 1);
-  return genres[randomIndex];
+  const randomIndex = createRandomArray(genres);
+  return randomIndex;
 };
 
 const generateAuthor = () => {

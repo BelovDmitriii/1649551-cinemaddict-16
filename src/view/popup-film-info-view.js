@@ -8,6 +8,7 @@ const createFilmInfoTemplate = (filmCard) => {
     userDetails
   } = filmCard;
 
+  const genresName = filmInfo.genre.length > 1 ? 'Genres' : 'Genre';
   const displayComments = comments.map((comment) => createCommentDetails(comment)).join('');
 
   return `<section class="film-details">
@@ -60,7 +61,7 @@ const createFilmInfoTemplate = (filmCard) => {
                   <td class="film-details__cell">${filmInfo.release.releaseCountry}</td>
                 </tr>
                 <tr class="film-details__row">
-                  <td class="film-details__term">Genres</td>
+                  <td class="film-details__term">${genresName}</td>
                   <td class="film-details__cell">
                     <span class="film-details__genre">${filmInfo.genre}</span>
                 </tr>
