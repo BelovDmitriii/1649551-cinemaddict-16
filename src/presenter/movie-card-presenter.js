@@ -1,11 +1,7 @@
 import FilmCardView from '../view/film-card-view.js';
 import FilmInfoView from '../view/popup-film-info-view';
 import { RenderPosition, render, remove, replace } from '../utils/render.js';
-
-const EscapeKeyDown = {
-  ESC: 'Esc',
-  ESCAPE: 'Escape'
-};
+import { EvtKey } from '../utils/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -97,7 +93,7 @@ export default class MovieCardPresenter {
   }
 
   #onEscKeyDown = (evt) => {
-    if (evt.key === EscapeKeyDown.ESCAPE || evt.key === EscapeKeyDown.ESC) {
+    if (evt.key === EvtKey.ESCAPE || evt.key === EvtKey.ESC) {
       evt.preventDefault();
       this.#closeCardPopup();
     }
