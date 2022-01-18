@@ -58,8 +58,10 @@ export default class MovieCardPresenter {
     }
 
     if (this.#mode === Mode.EDITING){
+      const scrollPosition = prevfilmPopupComponent.element.scrollTop;
       replace(this.#filmCardComponent, prevfilmCardComponent);
       replace(this.#filmPopupComponent, prevfilmPopupComponent);
+      this.#filmPopupComponent.element.scrollTop = scrollPosition;
     }
 
     remove(prevfilmCardComponent);
