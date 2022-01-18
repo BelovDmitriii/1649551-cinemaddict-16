@@ -1,7 +1,6 @@
 import { createCommentDetails } from './comment-details-view.js';
 import SmartView from './smart-view.js';
-import { EvtKey } from '../utils/const.js';
-import { EMOJIS } from '../utils/const.js';
+import { EvtKey, EMOJIS } from '../utils/const.js';
 
 const createFilmInfoTemplate = (filmCard) => {
   const {
@@ -9,7 +8,7 @@ const createFilmInfoTemplate = (filmCard) => {
     comments,
     userDetails,
     isEmoji,
-    isMessage,
+    isComment,
     isEmojiChecked
   } = filmCard;
 
@@ -101,16 +100,16 @@ const createFilmInfoTemplate = (filmCard) => {
 
               <div class="film-details__new-comment">
                 <div class="film-details__add-emoji-label">${isEmoji}
+                </div>
+
+                <label class="film-details__comment-label">
+                  <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${isComment}</textarea>
+                </label>
+
+                <div class="film-details__emoji-list">
+                ${EMOJIS.map((emoji) => createEmojiTemplate(emoji)).join('')}
+                </div>
               </div>
-
-              <label class="film-details__comment-label">
-                <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${isMessage}</textarea>
-              </label>
-
-              <div class="film-details__emoji-list">
-              ${EMOJIS.map((emoji) => createEmojiTemplate(emoji)).join('')}
-              </div>
-
             </section>
           </div>
         </form>
@@ -120,16 +119,24 @@ const createFilmInfoTemplate = (filmCard) => {
 export default class FilmInfoView extends SmartView {
   #films = null;
   #emoji = null;
+  #comments = null;
 
   constructor(films) {
     super();
     this._data = FilmInfoView.parseFilmToData(films);
+
+    this.setFormSubmitHandler(this.#commentSubmit);
 
     this.#setInnerHandlers();
   }
 
   get template() {
     return createFilmInfoTemplate(this._data);
+  }
+
+
+  #commentSubmit = () => {
+    this.#comments.disabled = true;
   }
 
   reset = (film) => {
@@ -142,30 +149,42 @@ export default class FilmInfoView extends SmartView {
     this.setFavoriteClickHandler(this._callback.favoriteClick);
     this.setWatchedClickHandler(this._callback.watchedClick);
     this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
   };
 
   #onEnterKeyDown = (evt) => {
-    if ((evt.ctrlKey || evt.metaKey) && evt.code === EvtKey.ENTER) {
+    if (evt.key === EvtKey.ENTER && (evt.metaKey || evt.ctrlKey)) {
       evt.preventDefault();
+      this._callback.formSubmit(FilmInfoView.parseDataToFilm(this._data));
     }
   };
 
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.#comments = this.element.querySelector('.film-details__comment-input');
+    this.#comments.addEventListener('keydown', this.#onEnterKeyDown);
+  }
+
   #setInnerHandlers = () => {
-    const emojies = this.element.querySelectorAll('.film-details__emoji-list input[name="comment-emoji"]');
-    emojies.forEach((emoji) => emoji.addEventListener('click', this.#emojiClickHandler));
-    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#messageInputHandler);
-    this.element.querySelector('.film-details__comment-input').addEventListener('keydown', this.#onEnterKeyDown);
+    const emojis = this.element.querySelectorAll('.film-details__emoji-list input[name="comment-emoji"]');
+    emojis.forEach((emoji) => emoji.addEventListener('click', this.#emojiClickHandler));
+    this.element.querySelector('.film-details__comment-input').addEventListener('input', this.#commentInputHandler);
   };
 
-  #messageInputHandler = (evt) => {
+  #commentInputHandler = (evt) => {
     evt.preventDefault();
     this.updateData(
       {
-        isMessage: evt.target.value,
+        isComment: evt.target.value,
       },
-      true,
+      true
     );
   };
+
+  setNewCommentsSubmit = (callback) => {
+    this._callback.commentsSubmit = callback;
+    this.#comments = this.element.querySelector('.film-details__comment-input').addEventListener('keydown', this.#onEnterKeyDown);
+  }
 
   #emojiClickHandler = (evt) => {
     evt.preventDefault();
@@ -178,6 +197,7 @@ export default class FilmInfoView extends SmartView {
   setHideCardClickHandler = (callback) => {
     this._callback.editClick = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#clickHandler);
+    FilmInfoView.parseDataToFilm(this._data);
   }
 
   #clickHandler = (evt) => {
@@ -215,14 +235,18 @@ export default class FilmInfoView extends SmartView {
     this._callback.watchedClick();
   }
 
-  static parseFilmToData = (film) => ({ ...film, isEmoji: '', isMessage: '', isEmojiChecked: '' });
+  static parseFilmToData = (film) => ({ ...film,
+    isEmoji: '',
+    isComment: '',
+    isEmojiChecked: ''
+  });
 
   static parseDataToFilm = (data) => {
     const film = { ...data };
 
     delete film.isEmoji;
-    delete film.isMessage;
-    delete film.isEmojiChecked;
+    delete film.isComment;
+    delete film.emojiChecked;
 
     return film;
   };

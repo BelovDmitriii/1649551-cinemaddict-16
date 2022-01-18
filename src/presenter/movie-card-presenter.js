@@ -73,6 +73,7 @@ export default class MovieCardPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#filmPopupComponent.reset(this.#filmCard);
       this.#closeCardPopup();
     }
   }
@@ -95,6 +96,7 @@ export default class MovieCardPresenter {
   #onEscKeyDown = (evt) => {
     if (evt.key === EvtKey.ESCAPE || evt.key === EvtKey.ESC) {
       evt.preventDefault();
+      this.#filmPopupComponent.reset(this.#filmCard);
       this.#closeCardPopup();
     }
   }
