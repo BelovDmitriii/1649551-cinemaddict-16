@@ -7,6 +7,8 @@ const createFilmCardTemplate = (filmsCard) => {
     userDetails
   } = filmsCard;
 
+  const description = filmInfo.description.length > 140 ? filmInfo.description.slice(0, 139).concat('...') : filmInfo.description;
+
   return `<article class="film-card">
     <a class="film-card__link">
       <h3 class="film-card__title">${filmInfo.title}</h3>
@@ -17,7 +19,7 @@ const createFilmCardTemplate = (filmsCard) => {
         <span class="film-card__genre">${filmInfo.genre}</span>
       </p>
       <img src="./images/posters/${filmInfo.poster}" alt="${filmInfo.title}" class="film-card__poster">
-      <p class="film-card__description">${filmInfo.description}</p>
+      <p class="film-card__description">${description}</p>
       <span class="film-card__comments">Comments: ${comments.length}</span>
     </a>
     <div class="film-card__controls">

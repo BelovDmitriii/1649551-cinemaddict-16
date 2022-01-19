@@ -1,11 +1,7 @@
 import FilmCardView from '../view/film-card-view.js';
 import FilmInfoView from '../view/popup-film-info-view';
 import { RenderPosition, render, remove, replace } from '../utils/render.js';
-
-const EscapeKeyDown = {
-  ESC: 'Esc',
-  ESCAPE: 'Escape'
-};
+import { EvtKey } from '../utils/const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -62,8 +58,10 @@ export default class MovieCardPresenter {
     }
 
     if (this.#mode === Mode.EDITING){
+      const scrollPosition = prevfilmPopupComponent.element.scrollTop;
       replace(this.#filmCardComponent, prevfilmCardComponent);
       replace(this.#filmPopupComponent, prevfilmPopupComponent);
+      this.#filmPopupComponent.element.scrollTop = scrollPosition;
     }
 
     remove(prevfilmCardComponent);
@@ -77,6 +75,7 @@ export default class MovieCardPresenter {
 
   resetView = () => {
     if (this.#mode !== Mode.DEFAULT) {
+      this.#filmPopupComponent.reset(this.#filmCard);
       this.#closeCardPopup();
     }
   }
@@ -97,8 +96,9 @@ export default class MovieCardPresenter {
   }
 
   #onEscKeyDown = (evt) => {
-    if (evt.key === EscapeKeyDown.ESCAPE || evt.key === EscapeKeyDown.ESC) {
+    if (evt.key === EvtKey.ESCAPE || evt.key === EvtKey.ESC) {
       evt.preventDefault();
+      this.#filmPopupComponent.reset(this.#filmCard);
       this.#closeCardPopup();
     }
   }

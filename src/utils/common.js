@@ -24,7 +24,7 @@ const shuffle = (array) => {
   return array;
 };
 
-export const createRandomArray = (array) => shuffle(array).slice(0, getRandomInteger(0, array.length - 1));
+export const createRandomArray = (array) => shuffle(array).slice(0, getRandomInteger(1, array.length - 1));
 
 export const getFloatingPointNumber = (min = 0, max = 10, exp = 1) => Number((Math.random() * (max - min) + min).toFixed(exp));
 
