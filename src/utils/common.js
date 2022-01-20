@@ -15,11 +15,10 @@ export const getRandomFloatInteger = (a = 0, b = 8.9) => {
 export const getRandomArrayElement = (element) => element[getRandomInteger(0, element.length - 1)];
 
 const shuffle = (array) => {
-  const copyOfArray = array.slice();
 
-  for (let i = copyOfArray.length - 1; i > 0; i--) {
+  for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [copyOfArray[i], copyOfArray[j]] = [copyOfArray[j], copyOfArray[i]];
+    [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
 };
@@ -43,4 +42,4 @@ export const updateItem = (items, update) => {
 };
 
 export const sortFilmsByRating = (cardA, cardB) => cardB.filmInfo.totalRating - cardA.filmInfo.totalRating;
-export const sortFilmsByDate = (cardA, cardB) => cardB.filmInfo.release.date - cardA.filmInfo.release.date;
+//export const sortFilmsByDate = (cardA, cardB) => cardB.filmInfo.release.date - cardA.filmInfo.release.date;

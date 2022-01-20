@@ -1,6 +1,7 @@
 import { createCommentDetails } from './comment-details-view.js';
 import SmartView from './smart-view.js';
 import { EvtKey, EMOJIS } from '../utils/const.js';
+import { getPopupFilmReleaseDateFormat, getFilmDurationFormat } from '../utils/date.js';
 
 const createFilmInfoTemplate = (filmCard) => {
   const {
@@ -62,11 +63,11 @@ const createFilmInfoTemplate = (filmCard) => {
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Release Date</td>
-                  <td class="film-details__cell">${filmInfo.release.date}</td>
+                  <td class="film-details__cell">${getPopupFilmReleaseDateFormat(filmInfo.release.date)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Runtime</td>
-                  <td class="film-details__cell">${filmInfo.runtime.hours}h ${filmInfo.runtime.minutes}m</td>
+                  <td class="film-details__cell"> ${getFilmDurationFormat(filmInfo.runtime)}</td>
                 </tr>
                 <tr class="film-details__row">
                   <td class="film-details__term">Country</td>
