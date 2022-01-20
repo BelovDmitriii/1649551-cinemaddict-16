@@ -7,7 +7,8 @@ import ShowMoreButtonView from '../view/show-more-button-view.js';
 import EmptyFilmList from '../view/film-list-empty-view.js';
 import { render, RenderPosition, remove } from '../utils/render.js';
 import MovieCardPresenter from './movie-card-presenter.js';
-import { updateItem, sortFilmsByRating, sortFilmsByDate } from '../utils/common.js';
+import { updateItem, sortFilmsByRating } from '../utils/common.js';
+import { sortFilmsByDate } from '../utils/date.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 

@@ -2,7 +2,6 @@ import { getRandomFloatInteger, getRandomInteger, createRandomArray } from '../u
 import { generateDate } from '../utils/date.js';
 import { nanoid } from 'nanoid';
 
-
 const ACTORS = [
   'Al Pacino',
   'Robert De Niro',
@@ -164,7 +163,25 @@ const generateAge = () => {
   return age[randomIndex];
 };
 
-const generateDuration = (time) => Math.floor(time/60);
+const getRandomReleaseDate = () => {
+  const releseDate = [
+    '1957-12-29T00:00:00.000Z',
+    '1965-08-03T00:00:00.000Z',
+    '1976-04-23T00:00:00.000Z',
+    '2017-09-04T00:00:00.000Z',
+    '2010-10-12T00:00:00.000Z',
+    '2001-01-29T00:00:00.000Z',
+    '2014-02-19T00:00:00.000Z',
+    '2020-05-15T00:00:00.000Z',
+    '2017-11-05T00:00:00.000Z',
+    '1998-03-17T00:00:00.000Z',
+    '2003-07-30T00:00:00.000Z',
+    '2002-0-07T00:00:00.000Z',
+  ];
+
+  const randomIndex = getRandomInteger(0, releseDate.length - 1);
+  return releseDate[randomIndex];
+};
 
 const generateFilmComment = () => ({
   id: nanoid(),
@@ -192,13 +209,10 @@ export const generateFilmCard = () => ({
     writers: createRandomArray(WRITERS),
     actors: createRandomArray(ACTORS),
     release: {
-      date: getRandomInteger(1970, 2021),
+      date: getRandomReleaseDate(),
       releaseCountry: generateCountry()
     },
-    runtime: {
-      hours: generateDuration(getRandomInteger(FilmLength.MIN, FilmLength.MAX)),
-      minutes: getRandomInteger(0, 60)
-    },
+    runtime: getRandomInteger(FilmLength.MIN, FilmLength.MAX),
     genre: generateGenre(),
     description: generateDescription(),
   },
