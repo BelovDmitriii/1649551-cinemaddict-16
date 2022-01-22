@@ -8,12 +8,16 @@ import { generateFilmCard} from './mock/movie-card.js';
 import { generateProfile } from './mock/profile.js';
 import { generateFilters } from './mock/filter.js';
 import MovieListPresenter from './presenter/movie-list-presenter.js';
+import FilmsModel from './model/films-model.js';
 
 const MOVIE_COUNT = 40;
 
 const filmCards = Array.from({length: MOVIE_COUNT}, generateFilmCard);
 const filters = generateFilters(filmCards);
 const profile = generateProfile();
+
+const filmsModel = new FilmsModel();
+FilmsModel.films = filmCards;
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
@@ -24,7 +28,7 @@ render(siteHeaderElement, profileComponent, RenderPosition.BEFOREEND);
 
 render(siteMainElement,  new FilterView(filters), RenderPosition.AFTERBEGIN);
 
-const movieListPresenter = new MovieListPresenter(siteMainElement);
+const movieListPresenter = new MovieListPresenter(siteMainElement, filmsModel);
 
 movieListPresenter.init(filmCards);
 

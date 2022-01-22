@@ -14,6 +14,7 @@ const MOVIE_COUNT_PER_STEP = 5;
 
 export default class MovieListPresenter {
   #mainContainer = null;
+  #filmsModel = null;
 
   #filmsComponent = new FilmsView();
   #filmListComponent = new FilmListView();
@@ -29,8 +30,13 @@ export default class MovieListPresenter {
   #currentSortType = SortType.DEFAULT;
   #sourcedFilmCards = [];
 
-  constructor (mainContainer) {
+  constructor (mainContainer, filmsModel) {
     this.#mainContainer = mainContainer;
+    this.#filmsModel = filmsModel;
+  }
+
+  get films ()  {
+    return this.#filmsModel.films;
   }
 
   init = (filmCards) => {
