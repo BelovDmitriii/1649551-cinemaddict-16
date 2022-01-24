@@ -30,7 +30,7 @@ render(siteMainElement,  new FilterView(filters), RenderPosition.AFTERBEGIN);
 
 const movieListPresenter = new MovieListPresenter(siteMainElement, filmsModel);
 
-movieListPresenter.init(filmCards);
+movieListPresenter.init();
 
 const extraFilms = new FilmsExtraTemplate();
 const footerStats = new FooterStatisticView(filmCards);

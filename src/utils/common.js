@@ -42,4 +42,3 @@ export const updateItem = (items, update) => {
 };
 
 export const sortFilmsByRating = (cardA, cardB) => cardB.filmInfo.totalRating - cardA.filmInfo.totalRating;
-//export const sortFilmsByDate = (cardA, cardB) => cardB.filmInfo.release.date - cardA.filmInfo.release.date;
