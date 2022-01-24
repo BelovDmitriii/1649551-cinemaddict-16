@@ -1,12 +1,8 @@
 import FilmCardView from '../view/film-card-view.js';
 import FilmInfoView from '../view/popup-film-info-view';
 import { RenderPosition, render, remove, replace } from '../utils/render.js';
-import { EvtKey } from '../utils/const.js';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
+import { EvtKey, Mode, UserAction, UpdateType } from '../utils/const.js';
+import { FilterType } from '../model/filter-model.js';
 
 export default class MovieCardPresenter {
   #filmCardComponent = null;
@@ -15,15 +11,17 @@ export default class MovieCardPresenter {
   #mainContainer = null;
   #bodyElement = null;
   #changeCardData = null;
+  #currentFilter = null;
   #changeMode = null;
 
   #filmCard = null;
   #mode = Mode.DEFAULT;
 
-  constructor(filmsListContainer, mainContainer, changeCardData, changeMode) {
+  constructor(filmsListContainer, mainContainer, changeCardData, currentFilter, changeMode) {
     this.#filmsListContainer = filmsListContainer;
     this.#mainContainer = mainContainer;
     this.#changeCardData = changeCardData;
+    this.#currentFilter = currentFilter;
     this.#changeMode = changeMode;
   }
 
@@ -116,48 +114,45 @@ export default class MovieCardPresenter {
   }
 
   #handleFavoriteClick = () => {
-    this.#changeCardData(Object.assign(
-      {},
-      this.#filmCard,
-      {
+    this.#changeCardData(
+      UserAction.UPDATE_FILM,
+      this.#currentFilter !== FilterType.FAVORITES ? UpdateType.PATCH : UpdateType.MINOR, {
+        ...this.#filmCard,
         userDetails: {
-          isWatchlist: this.#filmCard.userDetails.isWatchlist,
-          isWatched: this.#filmCard.userDetails.isWatched,
+          isWatchlist: this.#filmCard.userDetails.watchlist,
+          isWatched: this.#filmCard.userDetails.alreadyWatched,
           watchingDate: this.#filmCard.userDetails.watchingDate,
-          isFavorite: !this.#filmCard.userDetails.isFavorite
-        }
-      }
-    ));
+          isFavorite: !this.#filmCard.userDetails.favorite
+        },
+      });
   }
 
   #handleWatchedClick = () => {
-    this.#changeCardData(Object.assign(
-      {},
-      this.#filmCard,
-      {
+    this.#changeCardData(
+      UserAction.UPDATE_FILM,
+      this.#currentFilter !== FilterType.WATCHLIST ? UpdateType.PATCH : UpdateType.MINOR, {
+        ...this.#filmCard,
         userDetails: {
-          isWatchlist: this.#filmCard.userDetails.isWatchlist,
-          isWatched: !this.#filmCard.userDetails.isWatched,
+          isWatchlist: this.#filmCard.userDetails.watchlist,
+          isWatched: !this.#filmCard.userDetails.alreadyWatched,
           watchingDate: this.#filmCard.userDetails.watchingDate,
-          isFavorite: this.#filmCard.userDetails.isFavorite,
-        }
-      }
-    ));
+          isFavorite: this.#filmCard.userDetails.favorite
+        },
+      });
   }
 
   #handleWatchlistClick = () => {
-    this.#changeCardData(Object.assign(
-      {},
-      this.#filmCard,
-      {
+    this.#changeCardData(
+      UserAction.UPDATE_FILM,
+      this.#currentFilter !== FilterType.HISTORY ? UpdateType.PATCH : UpdateType.MINOR, {
+        ...this.#filmCard,
         userDetails: {
-          isWatchlist: !this.#filmCard.userDetails.isWatchlist,
-          isWatched: this.#filmCard.userDetails.isWatched,
+          isWatchlist: !this.#filmCard.userDetails.watchlist,
+          isWatched: this.#filmCard.userDetails.alreadyWatched,
           watchingDate: this.#filmCard.userDetails.watchingDate,
-          isFavorite: this.#filmCard.userDetails.isFavorite,
-        }
-      }
-    ));
+          isFavorite: this.#filmCard.userDetails.favorite
+        },
+      });
   }
 
 }
