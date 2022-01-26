@@ -2,7 +2,7 @@ import FilmsView from '../view/films-view.js';
 import FilmListView from '../view/films-list-view.js';
 import FilmListContainerView from '../view/films-list-container-view.js';
 import SortView from '../view/sort-view.js';
-import { SortType } from '../view/sort-view.js';
+import { SortType } from '../utils/const.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import EmptyFilmList from '../view/film-list-empty-view.js';
 import { render, RenderPosition, remove } from '../utils/render.js';
@@ -16,13 +16,13 @@ const MOVIE_COUNT_PER_STEP = 5;
 export default class MovieListPresenter {
   #mainContainer = null;
   #filmsModel = null;
+  #filmSortComponent = null;
+  #showMoreButtonComponent = null;
 
   #filmsComponent = new FilmsView();
   #filmListComponent = new FilmListView();
   #filmsListContainer = new FilmListContainerView();
-  #filmSortComponent = new SortView();
   #emptyFilmList = new EmptyFilmList();
-  #showMoreButtonComponent = new ShowMoreButtonView();
 
   #renderedMovieCount = MOVIE_COUNT_PER_STEP;
   #cardPresenterMap = new Map();
@@ -74,22 +74,16 @@ export default class MovieListPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#cardPresenterMap.get(data.id).init(data);
-        if (this.#cardPresenterMap.has(data.id)) {
-          this.#cardPresenterMap.get(data.id).init(data);
-        }
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда задача ушла в архив)
+        this.#clearFilmList();
+        this.#renderFilmList();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        this.#clearFilmList({resetRenderedMovieCount: true, resetSortType: true});
+        this.#renderFilmList();
         break;
     }
-    //console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
   }
 
   #handleSortTypeChange = (sortType) => {
@@ -98,13 +92,14 @@ export default class MovieListPresenter {
     }
 
     this.#currentSortType = sortType;
-    this.#clearFilmCardsList();
+    this.#clearFilmList({resetRenderedMovieCount: true});
     this.#renderFilmList();
   }
 
   #renderSort = () => {
-    render (this.#filmsComponent, this.#filmSortComponent, RenderPosition.BEFOREBEGIN);
+    this.#filmSortComponent = new SortView(this.#currentSortType);
     this.#filmSortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
+    render (this.#filmsComponent, this.#filmSortComponent, RenderPosition.BEFOREBEGIN);
   }
 
   #renderCard = (card) => {
@@ -136,8 +131,9 @@ export default class MovieListPresenter {
   }
 
   #renderShowMoreButton = () => {
-    render(this.#filmListComponent,this.#showMoreButtonComponent, RenderPosition.BEFOREEND);
+    this.#showMoreButtonComponent = new ShowMoreButtonView();
     this.#showMoreButtonComponent.setShowMoreButtonClickHandler(this.#handleLoadMoreButtonClick);
+    render(this.#filmListComponent,this.#showMoreButtonComponent, RenderPosition.BEFOREEND);
   }
 
   #clearFilmCardsList = () => {
@@ -154,6 +150,27 @@ export default class MovieListPresenter {
 
     if (cardsCount > this.#renderedMovieCount) {
       this.#renderShowMoreButton();
+    }
+  }
+
+  #clearFilmList = ({resetRenderedMovieCount = false, resetSortType = false} = {}) => {
+    const cardsCount = this.films.length;
+
+    this.#cardPresenterMap.forEach((presenter) => presenter.destroy());
+    this.#cardPresenterMap.clear();
+
+    remove(this.#filmSortComponent);
+    remove(this.#emptyFilmList);
+    remove(this.#showMoreButtonComponent);
+
+    if (resetRenderedMovieCount) {
+      this.#renderedMovieCount = MOVIE_COUNT_PER_STEP;
+    } else {
+      this.#renderedMovieCount = Math.min(cardsCount, this.#renderedMovieCount);
+    }
+
+    if (resetSortType) {
+      this.#currentSortType = SortType.DEFAULT;
     }
   }
 

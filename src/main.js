@@ -17,7 +17,7 @@ const filters = generateFilters(filmCards);
 const profile = generateProfile();
 
 const filmsModel = new FilmsModel();
-FilmsModel.films = filmCards;
+filmsModel.films = filmCards;
 
 const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
