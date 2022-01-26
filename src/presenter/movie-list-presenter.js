@@ -143,16 +143,6 @@ export default class MovieListPresenter {
     remove(this.#showMoreButtonComponent);
   }
 
-  #renderFilmCardList = () => {
-    const cards = this.films;
-    const cardsCount = cards.length;
-    this.#renderFilmCards(cards.slice(0, Math.min(cardsCount, this.#renderedMovieCount)));
-
-    if (cardsCount > this.#renderedMovieCount) {
-      this.#renderShowMoreButton();
-    }
-  }
-
   #clearFilmList = ({resetRenderedMovieCount = false, resetSortType = false} = {}) => {
     const cardsCount = this.films.length;
 
@@ -182,6 +172,10 @@ export default class MovieListPresenter {
       return;
     }
     this.#renderSort();
-    this.#renderFilmCardList();
+    this.#renderFilmCards(cards.slice(0, Math.min(cardsCount, this.#renderedMovieCount)));
+
+    if (cardsCount > this.#renderedMovieCount) {
+      this.#renderShowMoreButton();
+    }
   }
 }
