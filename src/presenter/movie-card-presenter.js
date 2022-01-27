@@ -2,7 +2,7 @@ import FilmCardView from '../view/film-card-view.js';
 import FilmInfoView from '../view/popup-film-info-view';
 import { RenderPosition, render, remove, replace } from '../utils/render.js';
 import { EvtKey, Mode, UserAction, UpdateType } from '../utils/const.js';
-import { FilterType } from '../model/filter-model.js';
+import { FilterType } from '../utils/const.js';
 
 export default class MovieCardPresenter {
   #filmCardComponent = null;
@@ -15,6 +15,7 @@ export default class MovieCardPresenter {
   #changeMode = null;
 
   #filmCard = null;
+
   #mode = Mode.DEFAULT;
 
   constructor(filmsListContainer, mainContainer, changeCardData, currentFilter, changeMode) {
@@ -37,6 +38,7 @@ export default class MovieCardPresenter {
 
     this.#filmCardComponent.setOpenCardClickHandler(this.#handleFilmCardClick);
     this.#filmPopupComponent.setHideCardClickHandler(this.#handleCloseButtonClick);
+    //this.#filmPopupComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     this.#filmCardComponent.setFavoriteClickHandler(this.#handleFavoriteClick);
     this.#filmCardComponent.setWatchedClickHandler(this.#handleWatchedClick);

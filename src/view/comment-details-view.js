@@ -1,7 +1,7 @@
 import AbstractView from './abstract-view.js';
 import { getCommentDateFormat } from '../utils/date.js';
 
-export const createCommentDetails = (comments) => {
+export const createCommentDetails = (comments = {}) => {
   const {
     emotion,
     comment,
@@ -37,4 +37,15 @@ export default class CommentDetails extends AbstractView {
   get template() {
     return createCommentDetails(this.#comment);
   }
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.film-details__comment-delete').addEventListener('click', this.#deleteClickHandler);
+  };
+
+  #deleteClickHandler = (evt) => {
+    evt.preventDefault();
+
+    this._callback.deleteClick(this.#comment.id);
+  };
 }

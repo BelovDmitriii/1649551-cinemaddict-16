@@ -1,12 +1,5 @@
-
 import AbstractObservable from '../utils/abstract-observable.js';
-
-export const FilterType = {
-  ALL: 'All movies',
-  WATCHLIST: 'Watchlist',
-  FAVORITES: 'Favorites',
-  HISTORY: 'History',
-};
+import { FilterType } from '../utils/const.js';
 
 export default class FilterModel extends AbstractObservable {
 #filter = FilterType.ALL;

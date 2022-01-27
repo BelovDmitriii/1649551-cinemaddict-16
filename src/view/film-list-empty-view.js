@@ -1,5 +1,5 @@
 import AbstractView from './abstract-view.js';
-import {FilterType} from '../model/filter-model.js';
+import { FilterType } from '../utils/const.js';
 
 const TitleContent = {
   [FilterType.ALL]: 'There are no movies in our database',

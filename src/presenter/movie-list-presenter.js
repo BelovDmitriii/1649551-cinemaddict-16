@@ -136,13 +136,6 @@ export default class MovieListPresenter {
     render(this.#filmListComponent,this.#showMoreButtonComponent, RenderPosition.BEFOREEND);
   }
 
-  #clearFilmCardsList = () => {
-    this.#cardPresenterMap.forEach((presenter) => presenter.destroy());
-    this.#cardPresenterMap.clear();
-    this.#renderedMovieCount = MOVIE_COUNT_PER_STEP;
-    remove(this.#showMoreButtonComponent);
-  }
-
   #clearFilmList = ({resetRenderedMovieCount = false, resetSortType = false} = {}) => {
     const cardsCount = this.films.length;
 
