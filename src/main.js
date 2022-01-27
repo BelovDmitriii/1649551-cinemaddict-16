@@ -6,7 +6,6 @@ import FooterStatisticView from './view/footer-statistics-view.js';
 import FilmsExtraTemplate from './view/films-extra-view.js';
 import { generateFilmCard} from './mock/movie-card.js';
 import { generateProfile } from './mock/profile.js';
-import { generateFilters } from './mock/filter.js';
 import MovieListPresenter from './presenter/movie-list-presenter.js';
 import FilmsModel from './model/films-model.js';
 import FilterModel from './model/filter-model.js';
@@ -14,7 +13,13 @@ import FilterModel from './model/filter-model.js';
 const MOVIE_COUNT = 25;
 
 const filmCards = Array.from({length: MOVIE_COUNT}, generateFilmCard);
-const filters = generateFilters(filmCards);
+const filters = [
+  {
+    type: 'all',
+    name: 'ALL',
+    count: 0
+  }
+];
 const profile = generateProfile();
 
 const filmsModel = new FilmsModel();
@@ -29,7 +34,7 @@ const siteFooterElement = document.querySelector('.footer');
 const profileComponent = new ProfileView(profile);
 render(siteHeaderElement, profileComponent, RenderPosition.BEFOREEND);
 
-render(siteMainElement,  new FilterView(filters), RenderPosition.AFTERBEGIN);
+render(siteMainElement,  new FilterView(filters, 'all'), RenderPosition.AFTERBEGIN);
 
 const movieListPresenter = new MovieListPresenter(siteMainElement, filmsModel);
 
