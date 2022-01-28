@@ -10,12 +10,14 @@ import MovieCardPresenter from './movie-card-presenter.js';
 import { sortFilmsByRating } from '../utils/common.js';
 import { sortFilmsByDate } from '../utils/date.js';
 import { UpdateType, UserAction } from '../utils/const.js';
+import { filter } from '../utils/filter.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
 
 export default class MovieListPresenter {
   #mainContainer = null;
   #filmsModel = null;
+  #filterModel = null;
   #filmSortComponent = null;
   #showMoreButtonComponent = null;
 
@@ -28,20 +30,27 @@ export default class MovieListPresenter {
   #cardPresenterMap = new Map();
   #currentSortType = SortType.DEFAULT;
 
-  constructor (mainContainer, filmsModel) {
+  constructor (mainContainer, filmsModel, filterModel) {
     this.#mainContainer = mainContainer;
     this.#filmsModel = filmsModel;
+    this.#filterModel = filterModel;
+
     this.#filmsModel.addObserver(this.#handleModelEvent);
+    this.#filterModel.addObserver(this.#handleModelEvent);
   }
 
   get films ()  {
+    const filterType = this.#filterModel.filter;
+    const films = this.#filmsModel.films;
+    const filteredFilms = filter[filterType](films);
+
     switch (this.#currentSortType) {
       case SortType.DATE:
-        return [...this.#filmsModel.films].sort(sortFilmsByDate);
+        return filteredFilms.sort(sortFilmsByDate);
       case SortType.RATING:
-        return [...this.#filmsModel.films].sort(sortFilmsByRating);
+        return filteredFilms.sort(sortFilmsByRating);
     }
-    return this.#filmsModel.films;
+    return filteredFilms;
   }
 
   init = () => {

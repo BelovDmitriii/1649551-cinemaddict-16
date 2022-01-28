@@ -9,9 +9,6 @@ const createFilterItemTemplate = (filter, currentFilterType) => {
         </a>`;
 };
 
-const createAllMoviesTemplate = () =>
-  '<a href="#all" class="main-navigation__item main-navigation__item--active">All movies</a>';
-
 const createFilterTemplate = (filters, currentFilterType) => {
 
   const filterItemsTemplate = filters
@@ -20,7 +17,6 @@ const createFilterTemplate = (filters, currentFilterType) => {
 
   return `<nav class="main-navigation">
      <div class="main-navigation__items">
-      ${createAllMoviesTemplate()}
       ${filterItemsTemplate}
     </div>
 
