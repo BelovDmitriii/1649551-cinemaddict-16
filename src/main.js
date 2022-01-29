@@ -10,7 +10,7 @@ import FilterPresenter from './presenter/filter-presenter.js';
 import FilmsModel from './model/films-model.js';
 import FilterModel from './model/filter-model.js';
 
-const MOVIE_COUNT = 0;
+const MOVIE_COUNT = 26;
 
 const filmCards = Array.from({length: MOVIE_COUNT}, generateFilmCard);
 

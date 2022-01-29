@@ -1,5 +1,6 @@
 import AbstractView from './abstract-view.js';
 import { getCommentDateFormat } from '../utils/date.js';
+import he from 'he';
 
 export const createCommentDetails = (comments = {}) => {
   const {
@@ -16,7 +17,7 @@ export const createCommentDetails = (comments = {}) => {
     <img src="./images/emoji/${emotion}.png" width="55" height="55" alt="emoji${emotion}">
   </span>
   <div>
-    <p class="film-details__comment-text">${comment}</p>
+    <p class="film-details__comment-text">${he.encode(comment)}</p>
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${author}</span>
       <span class="film-details__comment-day">${dayComment}</span>

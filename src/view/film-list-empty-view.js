@@ -20,14 +20,12 @@ const createEmptyMovieListTemplate = (activeFilter) => {
 };
 
 export default class EmptyFilmList extends AbstractView {
-  #activeFilter = null;
-
-  constructor(activeFilter) {
+  constructor(data) {
     super();
-    this.#activeFilter = activeFilter;
+    this._data = data;
   }
 
   get template() {
-    return createEmptyMovieListTemplate(this.#activeFilter);
+    return createEmptyMovieListTemplate(this._data);
   }
 }

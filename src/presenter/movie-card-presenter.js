@@ -3,6 +3,7 @@ import FilmInfoView from '../view/popup-film-info-view';
 import { RenderPosition, render, remove, replace } from '../utils/render.js';
 import { EvtKey, Mode, UserAction, UpdateType } from '../utils/const.js';
 import { FilterType } from '../utils/const.js';
+import CommentsModel from '../model/comments-model.js';
 
 export default class MovieCardPresenter {
   #filmCardComponent = null;
@@ -15,15 +16,19 @@ export default class MovieCardPresenter {
   #changeMode = null;
 
   #filmCard = null;
-
+  #commentsModel = null;
   #mode = Mode.DEFAULT;
 
-  constructor(filmsListContainer, mainContainer, changeCardData, currentFilter, changeMode) {
+  constructor(filmsListContainer, mainContainer, comments, changeCardData, currentFilter, changeMode) {
     this.#filmsListContainer = filmsListContainer;
     this.#mainContainer = mainContainer;
     this.#changeCardData = changeCardData;
     this.#currentFilter = currentFilter;
     this.#changeMode = changeMode;
+
+    this.#commentsModel = new CommentsModel();
+    this.#commentsModel.comments = comments;
+    this.#commentsModel.addObserver(this.#handleModelEvent);
   }
 
   init (filmCard) {
@@ -33,7 +38,7 @@ export default class MovieCardPresenter {
     const prevfilmPopupComponent = this.#filmPopupComponent;
 
     this.#filmCardComponent = new FilmCardView(filmCard);
-    this.#filmPopupComponent = new FilmInfoView(filmCard);
+    this.#filmPopupComponent = new FilmInfoView(filmCard, this.#commentsModel.comments, this.#handleViewAction);
     this.#bodyElement = document.querySelector('body');
 
     this.#filmCardComponent.setOpenCardClickHandler(this.#handleFilmCardClick);
@@ -109,6 +114,28 @@ export default class MovieCardPresenter {
       this.#showCardPopup();
     }
   }
+
+  #handleViewAction = (actionType, update) => {
+    switch (actionType) {
+      case UserAction.ADD_COMMENT:
+        this.#commentsModel.addComment(actionType, update);
+        break;
+      case UserAction.DELETE_COMMENT:
+        this.#commentsModel.deleteComment(actionType, update);
+        break;
+    }
+  };
+
+  #handleModelEvent = (actionType, data) => {
+    switch (actionType) {
+      case UserAction.ADD_COMMENT:
+        this.#changeCardData(UserAction.ADD_COMMENT, UpdateType.PATCH, { ...this.#filmCard, comments: this.#filmCard.comments.concat([data]) });
+        break;
+      case UserAction.DELETE_COMMENT:
+        this.#changeCardData(UserAction.DELETE_COMMENT, UpdateType.PATCH, { ...this.#filmCard, comments: this.#filmCard.comments.filter((comment) => comment.id !== data)});
+        break;
+    }
+  };
 
   #handleCloseButtonClick = () => {
     this.#closeCardPopup();

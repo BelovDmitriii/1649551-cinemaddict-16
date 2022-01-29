@@ -9,7 +9,7 @@ import { render, RenderPosition, remove } from '../utils/render.js';
 import MovieCardPresenter from './movie-card-presenter.js';
 import { sortFilmsByRating } from '../utils/common.js';
 import { sortFilmsByDate } from '../utils/date.js';
-import { UpdateType, UserAction } from '../utils/const.js';
+import { UpdateType, UserAction, FilterType } from '../utils/const.js';
 import { filter } from '../utils/filter.js';
 
 const MOVIE_COUNT_PER_STEP = 5;
@@ -20,15 +20,16 @@ export default class MovieListPresenter {
   #filterModel = null;
   #filmSortComponent = null;
   #showMoreButtonComponent = null;
+  #emptyFilmList = null;
 
   #filmsComponent = new FilmsView();
   #filmListComponent = new FilmListView();
   #filmsListContainer = new FilmListContainerView();
-  #emptyFilmList = new EmptyFilmList();
 
   #renderedMovieCount = MOVIE_COUNT_PER_STEP;
   #cardPresenterMap = new Map();
   #currentSortType = SortType.DEFAULT;
+  #filterType = FilterType.ALL;
 
   constructor (mainContainer, filmsModel, filterModel) {
     this.#mainContainer = mainContainer;
@@ -40,9 +41,9 @@ export default class MovieListPresenter {
   }
 
   get films ()  {
-    const filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter;
     const films = this.#filmsModel.films;
-    const filteredFilms = filter[filterType](films);
+    const filteredFilms = filter[this.#filterType](films);
 
     switch (this.#currentSortType) {
       case SortType.DATE:
@@ -123,6 +124,7 @@ export default class MovieListPresenter {
   }
 
   #renderEmptyFilms = () => {
+    this.#emptyFilmList = new EmptyFilmList(this.#filterType);
     render(this.#filmsComponent, this.#emptyFilmList, RenderPosition.BEFOREEND);
   }
 
@@ -152,8 +154,11 @@ export default class MovieListPresenter {
     this.#cardPresenterMap.clear();
 
     remove(this.#filmSortComponent);
-    remove(this.#emptyFilmList);
     remove(this.#showMoreButtonComponent);
+
+    if (this.#emptyFilmList) {
+      remove(this.#emptyFilmList);
+    }
 
     if (resetRenderedMovieCount) {
       this.#renderedMovieCount = MOVIE_COUNT_PER_STEP;
