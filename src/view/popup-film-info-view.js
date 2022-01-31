@@ -5,7 +5,7 @@ import { render, RenderPosition} from '../utils/render.js';
 import CommentDetails from './comment-details-view.js';
 import PostCommentView from './post-comment-view.js';
 
-const createFilmInfoTemplate = (filmCard, comments) => {
+const createFilmInfoTemplate = (filmCard) => {
   const {
     filmInfo,
     userDetails
@@ -85,7 +85,7 @@ const createFilmInfoTemplate = (filmCard, comments) => {
 
           <div class="film-details__bottom-container">
             <section class="film-details__comments-wrap">
-              <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+              <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">3</span></h3>
               <ul class="film-details__comments-list">
 
               </ul>
@@ -161,7 +161,6 @@ export default class FilmInfoView extends SmartView {
   setHideCardClickHandler = (callback) => {
     this._callback.editClick = callback;
     this.element.querySelector('.film-details__close-btn').addEventListener('click', this.#hideClickHandler);
-    FilmInfoView.parseDataToFilm(this._data);
   }
 
   #hideClickHandler = (evt) => {

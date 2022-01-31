@@ -28,15 +28,15 @@ export const createCommentDetails = (comments = {}) => {
 };
 
 export default class CommentDetails extends AbstractView {
-  #comment = null;
+  #comments = null;
 
-  constructor(comment) {
+  constructor(comments) {
     super();
-    this.#comment = comment;
+    this.#comments = comments;
   }
 
   get template() {
-    return createCommentDetails(this.#comment);
+    return createCommentDetails(this.#comments);
   }
 
   setDeleteClickHandler = (callback) => {
@@ -47,6 +47,6 @@ export default class CommentDetails extends AbstractView {
   #deleteClickHandler = (evt) => {
     evt.preventDefault();
 
-    this._callback.deleteClick(this.#comment.id);
+    this._callback.deleteClick(this.#comments.id);
   };
 }

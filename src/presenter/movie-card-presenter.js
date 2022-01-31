@@ -117,7 +117,7 @@ export default class MovieCardPresenter {
   };
 
   #setPopupHandlers = () => {
-    this.#filmPopupComponent.setCloseClickHandler(() => {
+    this.#filmPopupComponent.setHideCardClickHandler(() => {
       this.#removePopup();
       document.removeEventListener('keydown', this.#onEscKeyDown);
     });

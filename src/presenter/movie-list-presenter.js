@@ -43,7 +43,7 @@ export default class MovieListPresenter {
   }
 
   get films ()  {
-    this.#filterType = this.#filterModel.filter;
+    this.#filterType = this.#filterModel.filter|| 'All movies';
     const films = this.#filmsModel.films;
     const filteredFilms = filter[this.#filterType](films);
 

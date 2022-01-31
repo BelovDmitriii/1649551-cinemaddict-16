@@ -9,7 +9,15 @@ const createFilmListTemplate = () => (
 );
 
 export default class FilmListView extends AbstractView {
+  #container = null;
+
   get template() {
     return createFilmListTemplate();
+  }
+
+  get container() {
+    this.#container = this.element.querySelector('.films-list__container');
+
+    return this.#container;
   }
 }

@@ -198,7 +198,7 @@ const getRandomComments = (min = 0, max = 7) => {
 
 export const generateFilmCard = () => ({
   id: nanoid(),
-  comments: getRandomComments(0, 7),
+  comments: getRandomComments(),
   filmInfo: {
     title: generateRandomTitle(),
     alternativeTitle: generateRandomTitle(),
