@@ -7,8 +7,8 @@ export const EvtKey = {
 export const EMOJIS = ['smile', 'sleeping', 'puke', 'angry'];
 
 export const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
+  CARD: 'CARD',
+  POPUP: 'POPUP'
 };
 
 export const UserAction = {
@@ -30,8 +30,8 @@ export const SortType = {
 };
 
 export const FilterType = {
-  ALL: 'All movies',
-  WATCHLIST: 'Watchlist',
-  FAVORITES: 'Favorites',
-  HISTORY: 'History'
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites'
 };

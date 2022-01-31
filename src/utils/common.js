@@ -12,6 +12,8 @@ export const getRandomFloatInteger = (a = 0, b = 8.9) => {
   return result.toFixed(1);
 };
 
+export const createTemplateFromArray = (array, cb) => array.map((item) => cb(item)).join('');
+
 export const getRandomArrayElement = (element) => element[getRandomInteger(0, element.length - 1)];
 
 const shuffle = (array) => {

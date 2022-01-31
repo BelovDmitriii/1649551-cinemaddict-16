@@ -1,10 +1,8 @@
 import { render, RenderPosition} from './utils/render.js';
-import ProfileView from './view/profile-view.js';
 import FilmCardView from './view/film-card-view.js';
 import FooterStatisticView from './view/footer-statistics-view.js';
 import FilmsExtraTemplate from './view/films-extra-view.js';
 import { generateFilmCard} from './mock/movie-card.js';
-import { generateProfile } from './mock/profile.js';
 import MovieListPresenter from './presenter/movie-list-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import FilmsModel from './model/films-model.js';
@@ -12,9 +10,15 @@ import FilterModel from './model/filter-model.js';
 
 const MOVIE_COUNT = 26;
 
-const filmCards = Array.from({length: MOVIE_COUNT}, generateFilmCard);
+const renderCards = () => {
+  const array = [];
+  for (let i = 0; i < MOVIE_COUNT; i++) {
+    array.push(generateFilmCard());
+  }
+  return array;
+};
 
-const profile = generateProfile();
+const filmCards = renderCards();
 
 const filmsModel = new FilmsModel();
 filmsModel.films = filmCards;
@@ -25,10 +29,7 @@ const siteHeaderElement = document.querySelector('.header');
 const siteMainElement = document.querySelector('.main');
 const siteFooterElement = document.querySelector('.footer');
 
-const profileComponent = new ProfileView(profile);
-render(siteHeaderElement, profileComponent, RenderPosition.BEFOREEND);
-
-const movieListPresenter = new MovieListPresenter(siteMainElement, filmsModel, filterModel);
+const movieListPresenter = new MovieListPresenter(siteHeaderElement, siteMainElement, filmsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, filmsModel);
 
 filterPresenter.init();

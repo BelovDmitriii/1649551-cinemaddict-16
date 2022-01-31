@@ -4,10 +4,10 @@ import he from 'he';
 
 export const createCommentDetails = (comments = {}) => {
   const {
-    emotion,
-    comment,
     author,
-    date
+    date,
+    comment,
+    emotion
   } = comments;
 
   const dayComment = getCommentDateFormat(date);

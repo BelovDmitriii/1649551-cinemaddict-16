@@ -1,11 +1,11 @@
 import FilmsView from '../view/films-view.js';
 import FilmListView from '../view/films-list-view.js';
-import FilmListContainerView from '../view/films-list-container-view.js';
+import ProfileView from '../view/profile-view.js';
 import SortView from '../view/sort-view.js';
 import { SortType } from '../utils/const.js';
 import ShowMoreButtonView from '../view/show-more-button-view.js';
 import EmptyFilmList from '../view/film-list-empty-view.js';
-import { render, RenderPosition, remove } from '../utils/render.js';
+import { render, RenderPosition, remove, replace } from '../utils/render.js';
 import MovieCardPresenter from './movie-card-presenter.js';
 import { sortFilmsByRating } from '../utils/common.js';
 import { sortFilmsByDate } from '../utils/date.js';
@@ -16,22 +16,24 @@ const MOVIE_COUNT_PER_STEP = 5;
 
 export default class MovieListPresenter {
   #mainContainer = null;
+  #profileContainer = null;
   #filmsModel = null;
   #filterModel = null;
   #filmSortComponent = null;
   #showMoreButtonComponent = null;
   #emptyFilmList = null;
+  #profileComponent = null;
 
   #filmsComponent = new FilmsView();
   #filmListComponent = new FilmListView();
-  #filmsListContainer = new FilmListContainerView();
 
   #renderedMovieCount = MOVIE_COUNT_PER_STEP;
   #cardPresenterMap = new Map();
   #currentSortType = SortType.DEFAULT;
   #filterType = FilterType.ALL;
 
-  constructor (mainContainer, filmsModel, filterModel) {
+  constructor (profileContainer, mainContainer, filmsModel, filterModel) {
+    this.#profileContainer = profileContainer;
     this.#mainContainer = mainContainer;
     this.#filmsModel = filmsModel;
     this.#filterModel = filterModel;
@@ -54,16 +56,14 @@ export default class MovieListPresenter {
     return filteredFilms;
   }
 
-  init = () => {
-    render(this.#mainContainer, this.#filmsComponent, RenderPosition.BEFOREEND);
-    render(this.#filmsComponent, this.#filmListComponent, RenderPosition.BEFOREEND);
-    render(this.#filmListComponent, this.#filmsListContainer, RenderPosition.BEFOREEND);
-
-    this.#renderFilmList();
+  get watchedFilms() {
+    return this.#filmsModel.films.filter((film) => film.userDetails.alreadyWatched);
   }
 
-  #handleModeChange = () => {
-    this.#cardPresenterMap.forEach((presenter) => presenter.resetView());
+  init = () => {
+    render(this.#mainContainer, this.#filmsComponent, RenderPosition.BEFOREEND);
+
+    this.#renderFilmList();
   }
 
   #handleViewAction = (actionType, updateType, update) => {
@@ -84,6 +84,9 @@ export default class MovieListPresenter {
     switch (updateType) {
       case UpdateType.PATCH:
         this.#cardPresenterMap.get(data.id).init(data);
+        if (this.#cardPresenterMap.has(data.id)) {
+          this.#cardPresenterMap.get(data.id).init(data);
+        }
         break;
       case UpdateType.MINOR:
         this.#clearFilmList();
@@ -106,6 +109,21 @@ export default class MovieListPresenter {
     this.#renderFilmList();
   }
 
+  #renderProfile = () => {
+    const prevProfileComponent = this.#profileComponent;
+
+    this.#profileComponent = new ProfileView(this.watchedFilms.length);
+
+    if (prevProfileComponent === null) {
+      render(this.#profileContainer, this.#profileComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+
+    if (this.#profileContainer.contains(prevProfileComponent.element)) {
+      replace(this.#profileComponent, prevProfileComponent);
+    }
+  };
+
   #renderSort = () => {
     this.#filmSortComponent = new SortView(this.#currentSortType);
     this.#filmSortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
@@ -113,11 +131,16 @@ export default class MovieListPresenter {
   }
 
   #renderCard = (card) => {
-    const cardPresenter = new MovieCardPresenter(this.#filmsListContainer, this.#mainContainer, this.#handleViewAction, this.#handleModeChange);
+    const filmComments = card.comments;
+    const cardPresenter = new MovieCardPresenter(this.#filmListComponent, filmComments, this.#handleViewAction, this.#filterType, this.#renderProfile);
 
     cardPresenter.init(card);
     this.#cardPresenterMap.set(card.id, cardPresenter);
   }
+
+  #renderFilmsList = () => {
+    render(this.#filmsComponent, this.#filmListComponent, RenderPosition.BEFOREEND);
+  };
 
   #renderFilmCards = (films) => {
     films.forEach((card) => this.#renderCard(card));
@@ -178,7 +201,12 @@ export default class MovieListPresenter {
       this.#renderEmptyFilms();
       return;
     }
+    if (this.#profileComponent === null) {
+      this.#renderProfile();
+    }
+
     this.#renderSort();
+    this.#renderFilmsList();
     this.#renderFilmCards(cards.slice(0, Math.min(cardsCount, this.#renderedMovieCount)));
 
     if (cardsCount > this.#renderedMovieCount) {
