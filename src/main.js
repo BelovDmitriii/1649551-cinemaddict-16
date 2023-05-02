@@ -2,7 +2,7 @@ import { render, RenderPosition} from './utils/render.js';
 import FilmCardView from './view/film-card-view.js';
 import FooterStatisticView from './view/footer-statistics-view.js';
 import FilmsExtraTemplate from './view/films-extra-view.js';
-import { generateFilmCard} from './mock/movie-card.js';
+import { generateFilmCard } from './mock/movie-card.js';
 import MovieListPresenter from './presenter/movie-list-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import FilmsModel from './model/films-model.js';
