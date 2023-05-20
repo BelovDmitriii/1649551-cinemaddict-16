@@ -137,6 +137,7 @@ export default class MovieCardPresenter {
     if (document.body.querySelector('.film-details')) {
       document.body.querySelector('.film-details').remove();
       document.removeEventListener('keydown', this.#onEscKeyDown);
+      document.body.querySelector('.film-details__close-btn').addEventListener('click', () => remove(this.#filmPopupComponent));
     }
   };
 
